@@ -1,12 +1,11 @@
 import Header from "@/components/ui/Header";
 import KnowledgeGraph from "@/components/graph/KnowledgeGraph";
 import { prisma } from "@/lib/prisma";
-import { Network, Sparkles } from "lucide-react";
+import { Network, Sparkles, GitBranch } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function ExplorePage() {
-  // Fetch data on the server
   const talks = await prisma.talk.findMany({
     include: {
       speaker: true,
@@ -32,26 +31,39 @@ export default async function ExplorePage() {
   });
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col font-sans">
+    <div className="min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
-        {/* Title Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent flex items-center gap-2.5">
-              <Network className="h-8 w-8 text-violet-400" />
+        {/* Page header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-white/[0.04]">
+          <div className="space-y-1.5">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400 border border-violet-500/15">
+                <Network className="h-4 w-4" />
+              </div>
               Knowledge Graph
             </h1>
             <p className="text-sm text-zinc-400">
-              Visualize semantic connections and hidden cross-talk intersections discovered by AI.
+              Visualize semantic connections and hidden cross-talk intersections
+              discovered by AI.
             </p>
           </div>
-          
-          <div className="flex items-center gap-3 bg-zinc-900/40 border border-zinc-800 px-4 py-2 rounded-xl backdrop-blur-sm self-start md:self-auto">
-            <Sparkles className="h-4 w-4 text-violet-400 animate-pulse" />
-            <div className="text-xs text-zinc-300">
-              <span className="font-semibold text-white">{synapses.length}</span> semantic synapses mapped
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 glass px-3 py-2 rounded-lg">
+              <GitBranch className="h-3.5 w-3.5 text-zinc-400" />
+              <span className="text-xs text-zinc-300">
+                <span className="font-semibold text-white">{talks.length}</span>{" "}
+                nodes
+              </span>
+            </div>
+            <div className="flex items-center gap-2 glass px-3 py-2 rounded-lg">
+              <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+              <span className="text-xs text-zinc-300">
+                <span className="font-semibold text-white">{synapses.length}</span>{" "}
+                synapses
+              </span>
             </div>
           </div>
         </div>

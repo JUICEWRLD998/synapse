@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Activity } from "lucide-react";
 import { ProgressBar } from "@progress/kendo-react-progressbars";
 
 interface LoadingOverlayProps {
@@ -17,10 +16,13 @@ const statusMessages = [
   "Generating conference DNA profiles...",
   "Caching results to Neon databases...",
   "Optimizing knowledge graph topology...",
-  "Finalizing personalized briefings..."
+  "Finalizing personalized briefings...",
 ];
 
-export default function LoadingOverlay({ isVisible, title = "Analyzing Content..." }: LoadingOverlayProps) {
+export default function LoadingOverlay({
+  isVisible,
+  title = "Analyzing Content...",
+}: LoadingOverlayProps) {
   const [progress, setProgress] = useState(0);
   const [messageIndex, setMessageIndex] = useState(0);
 
@@ -31,15 +33,13 @@ export default function LoadingOverlay({ isVisible, title = "Analyzing Content..
       return;
     }
 
-    // Progress bar animation
     const progressTimer = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 95) return prev; // Hold at 95% until complete
+        if (prev >= 95) return prev;
         return prev + 1.5;
       });
     }, 200);
 
-    // Status message cycling
     const messageTimer = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % statusMessages.length);
     }, 2500);
@@ -53,30 +53,45 @@ export default function LoadingOverlay({ isVisible, title = "Analyzing Content..
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950/80 backdrop-blur-md transition-opacity duration-300">
-      <div className="w-full max-w-md p-8 rounded-2xl border border-zinc-800 bg-zinc-900/90 shadow-2xl text-center flex flex-col items-center">
-        {/* Animated brain/synapse icon */}
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/70 backdrop-blur-lg transition-opacity duration-300">
+      <div className="w-full max-w-sm p-8 glass-card rounded-2xl text-center flex flex-col items-center">
+        {/* Animated synapse icon */}
         <div className="relative mb-6">
-          <div className="absolute inset-0 rounded-full bg-violet-500/20 blur-xl animate-pulse"></div>
-          <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-violet-600 to-cyan-500 text-white shadow-xl shadow-violet-900/30">
-            <Activity className="h-8 w-8 animate-pulse text-white" />
+          <div className="absolute inset-0 rounded-full bg-violet-500/20 blur-2xl animate-glow-pulse" />
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-xl shadow-violet-900/30">
+            {/* Animated SVG synapse */}
+            <svg
+              viewBox="0 0 24 24"
+              className="h-7 w-7"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <circle cx="6" cy="6" r="2" className="animate-pulse" />
+              <circle cx="18" cy="6" r="2" className="animate-pulse" style={{ animationDelay: "0.3s" }} />
+              <circle cx="12" cy="18" r="2" className="animate-pulse" style={{ animationDelay: "0.6s" }} />
+              <line x1="7.5" y1="7.5" x2="16.5" y2="7.5" strokeDasharray="3 2" className="animate-pulse" />
+              <line x1="7" y1="7.5" x2="11" y2="16.5" strokeDasharray="3 2" className="animate-pulse" style={{ animationDelay: "0.2s" }} />
+              <line x1="17" y1="7.5" x2="13" y2="16.5" strokeDasharray="3 2" className="animate-pulse" style={{ animationDelay: "0.4s" }} />
+            </svg>
           </div>
         </div>
 
-        <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-        <p className="text-sm text-zinc-400 min-h-[40px] px-4 animate-fade-in">
+        <h3 className="text-lg font-semibold text-white mb-1.5">{title}</h3>
+        <p className="text-sm text-zinc-400 min-h-[40px] px-2 transition-all duration-300">
           {statusMessages[messageIndex]}
         </p>
 
         {/* Kendo ProgressBar */}
-        <div className="w-full mt-6 px-4">
+        <div className="w-full mt-5">
           <ProgressBar
             value={progress}
-            labelVisible={true}
-            className="w-full h-2 rounded bg-zinc-800 border-none"
+            labelVisible={false}
+            className="w-full h-1.5 rounded-full"
           />
-          <div className="text-[10px] text-zinc-500 mt-2 text-right">
-            Securing Neon Connection
+          <div className="flex justify-between mt-2 text-[10px] text-zinc-500">
+            <span>Processing</span>
+            <span>{Math.round(progress)}%</span>
           </div>
         </div>
       </div>

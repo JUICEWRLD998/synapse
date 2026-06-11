@@ -9,6 +9,8 @@ import {
   ChartCategoryAxisItem,
   ChartLegend,
   ChartTooltip,
+  ChartValueAxis,
+  ChartValueAxisItem,
 } from "@progress/kendo-react-charts";
 import { Talk, Synapse } from "@/types";
 
@@ -17,8 +19,11 @@ interface AnalyticsChartsProps {
   synapses: Synapse[];
 }
 
-export default function AnalyticsCharts({ talks, synapses }: AnalyticsChartsProps) {
-  // 1. Calculate Tag Frequencies
+export default function AnalyticsCharts({
+  talks,
+  synapses,
+}: AnalyticsChartsProps) {
+  // Tag frequencies
   const tagCounts: Record<string, number> = {};
   talks.forEach((talk) => {
     talk.tags.forEach((tag) => {
@@ -28,12 +33,12 @@ export default function AnalyticsCharts({ talks, synapses }: AnalyticsChartsProp
 
   const sortedTags = Object.entries(tagCounts)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 7); // Top 7 tags
+    .slice(0, 7);
 
   const tagCategories = sortedTags.map((entry) => entry[0]);
   const tagValues = sortedTags.map((entry) => entry[1]);
 
-  // 2. Calculate Synapse Types Distribution
+  // Synapse type distribution
   const typeCounts: Record<string, number> = {
     complementary: 0,
     contradictory: 0,
@@ -53,55 +58,94 @@ export default function AnalyticsCharts({ talks, synapses }: AnalyticsChartsProp
     value: count,
   }));
 
+  // Brand colors for donut
+  const donutColors = ["#10B981", "#EF4444", "#3B82F6", "#F59E0B", "#EC4899"];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Topic density bar chart */}
-      <div className="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/50 backdrop-blur-sm shadow-xl flex flex-col justify-between">
-        <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">Topic Coverage Density</h4>
-        <div className="h-[280px]">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Bar chart */}
+      <div className="glass-card rounded-2xl p-6 flex flex-col justify-between">
+        <div className="mb-4">
+          <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+            Topic Coverage
+          </h4>
+          <p className="text-[10px] text-zinc-500 mt-0.5">
+            Frequency of top tags across sessions
+          </p>
+        </div>
+        <div className="h-[260px]">
           <Chart style={{ height: "100%", background: "transparent" }}>
             <ChartTooltip />
             <ChartLegend visible={false} />
             <ChartCategoryAxis>
-              <ChartCategoryAxisItem categories={tagCategories} labels={{ color: "#a1a1aa", font: "11px var(--font-geist-sans)" }} />
+              <ChartCategoryAxisItem
+                categories={tagCategories}
+                labels={{
+                  color: "#71717a",
+                  font: "11px Inter, system-ui, sans-serif",
+                }}
+                line={{ color: "rgba(63,63,70,0.3)" }}
+              />
             </ChartCategoryAxis>
+            <ChartValueAxis>
+              <ChartValueAxisItem
+                labels={{
+                  color: "#52525b",
+                  font: "10px Inter, system-ui, sans-serif",
+                }}
+                line={{ color: "transparent" }}
+                majorGridLines={{ color: "rgba(63,63,70,0.15)" }}
+              />
+            </ChartValueAxis>
             <ChartSeries>
               <ChartSeriesItem
                 type="bar"
                 data={tagValues}
-                color="#8b5cf6" // Violet 500
-                gap={1.5}
+                color="#8b5cf6"
+                gap={1.2}
                 overlay={{ gradient: "glass" }}
               />
             </ChartSeries>
           </Chart>
         </div>
-        <p className="text-[10px] text-zinc-500 mt-2 text-center">
-          Frequency of tags assigned to conference sessions (top 7)
-        </p>
       </div>
 
-      {/* Synapse distribution pie/donut chart */}
-      <div className="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/50 backdrop-blur-sm shadow-xl flex flex-col justify-between">
-        <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">Synapse Distribution</h4>
-        <div className="h-[280px]">
+      {/* Donut chart */}
+      <div className="glass-card rounded-2xl p-6 flex flex-col justify-between">
+        <div className="mb-4">
+          <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+            Synapse Distribution
+          </h4>
+          <p className="text-[10px] text-zinc-500 mt-0.5">
+            Relationship type breakdown
+          </p>
+        </div>
+        <div className="h-[260px]">
           <Chart style={{ height: "100%", background: "transparent" }}>
             <ChartTooltip />
-            <ChartLegend labels={{ color: "#a1a1aa", font: "11px var(--font-geist-sans)" }} position="bottom" />
+            <ChartLegend
+              labels={{
+                color: "#a1a1aa",
+                font: "11px Inter, system-ui, sans-serif",
+              }}
+              position="bottom"
+            />
             <ChartSeries>
               <ChartSeriesItem
                 type="donut"
-                data={synapseTypeData}
+                data={synapseTypeData.map((d, i) => ({
+                  ...d,
+                  color: donutColors[i % donutColors.length],
+                }))}
                 categoryField="category"
                 field="value"
+                colorField="color"
                 overlay={{ gradient: "roundedBevel" }}
+                holeSize={55}
               />
             </ChartSeries>
           </Chart>
         </div>
-        <p className="text-[10px] text-zinc-500 mt-2 text-center">
-          Breakdown of semantic relationship categories found by Synapse
-        </p>
       </div>
     </div>
   );

@@ -10,7 +10,6 @@ interface TopSynapsesGridProps {
 }
 
 export default function TopSynapsesGrid({ synapses }: TopSynapsesGridProps) {
-  // Setup grid data mapping
   const gridData = synapses.map((s) => ({
     id: s.id,
     talkA: s.talkA?.title || "Unknown session",
@@ -22,24 +21,24 @@ export default function TopSynapsesGrid({ synapses }: TopSynapsesGridProps) {
     insight: s.insight,
   }));
 
-  // Sorting state
   const initialSort: SortDescriptor[] = [{ field: "strength", dir: "desc" }];
   const [sort, setSort] = useState<SortDescriptor[]>(initialSort);
 
-  // Custom Cells
   const StrengthCell = (props: GridCellProps) => {
     const val = props.dataItem[props.field || "strength"];
     const percent = (val * 100).toFixed(0);
     return (
       <td className="px-4 py-3 text-zinc-300">
         <div className="flex items-center gap-2">
-          <div className="w-12 bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+          <div className="w-14 bg-white/[0.04] rounded-full h-1.5 overflow-hidden">
             <div
-              className="bg-violet-500 h-1.5 rounded-full"
+              className="h-1.5 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500"
               style={{ width: `${percent}%` }}
-            ></div>
+            />
           </div>
-          <span className="font-semibold text-zinc-100">{percent}%</span>
+          <span className="font-medium text-zinc-200 text-xs tabular-nums">
+            {percent}%
+          </span>
         </div>
       </td>
     );
@@ -48,17 +47,20 @@ export default function TopSynapsesGrid({ synapses }: TopSynapsesGridProps) {
   const TypeCell = (props: GridCellProps) => {
     const val = props.dataItem[props.field || "type"] as string;
     const colors: Record<string, string> = {
-      Complementary: "bg-emerald-500/10 text-emerald-400 border-emerald-500/25",
-      Contradictory: "bg-rose-500/10 text-rose-400 border-rose-500/25",
-      Foundational: "bg-blue-500/10 text-blue-400 border-blue-500/25",
-      "Cross-domain": "bg-amber-500/10 text-amber-400 border-amber-500/25",
-      Evolutionary: "bg-pink-500/10 text-pink-400 border-pink-500/25",
+      Complementary: "bg-emerald-500/8 text-emerald-400 border-emerald-500/15",
+      Contradictory: "bg-rose-500/8 text-rose-400 border-rose-500/15",
+      Foundational: "bg-blue-500/8 text-blue-400 border-blue-500/15",
+      "Cross-domain": "bg-amber-500/8 text-amber-400 border-amber-500/15",
+      Evolutionary: "bg-pink-500/8 text-pink-400 border-pink-500/15",
     };
-    const colorClass = colors[val] || "bg-zinc-800 text-zinc-300 border-zinc-700/50";
+    const colorClass =
+      colors[val] || "bg-white/[0.03] text-zinc-400 border-white/[0.06]";
 
     return (
-      <td className="px-4 py-3 text-zinc-300">
-        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${colorClass}`}>
+      <td className="px-4 py-3">
+        <span
+          className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${colorClass}`}
+        >
           {val}
         </span>
       </td>
@@ -68,23 +70,33 @@ export default function TopSynapsesGrid({ synapses }: TopSynapsesGridProps) {
   const ConnectionCell = (props: GridCellProps) => {
     const item = props.dataItem;
     return (
-      <td className="px-4 py-3 font-sans">
+      <td className="px-4 py-3">
         <div className="flex flex-col gap-0.5">
-          <div className="text-zinc-100 font-semibold text-xs leading-snug">{item.talkA}</div>
-          <div className="text-[10px] text-zinc-500">Speaker: {item.speakerA}</div>
-          <div className="text-[9px] text-zinc-600 font-bold uppercase tracking-wider my-0.5">Connects To</div>
-          <div className="text-zinc-100 font-semibold text-xs leading-snug">{item.talkB}</div>
-          <div className="text-[10px] text-zinc-500">Speaker: {item.speakerB}</div>
+          <div className="text-zinc-200 font-medium text-xs leading-snug">
+            {item.talkA}
+          </div>
+          <div className="text-[10px] text-zinc-500">{item.speakerA}</div>
+          <div className="text-[9px] text-zinc-600 font-semibold uppercase tracking-wider my-0.5">
+            connects to
+          </div>
+          <div className="text-zinc-200 font-medium text-xs leading-snug">
+            {item.talkB}
+          </div>
+          <div className="text-[10px] text-zinc-500">{item.speakerB}</div>
         </div>
       </td>
     );
   };
 
   return (
-    <div className="border border-zinc-800 rounded-2xl bg-zinc-950 overflow-hidden shadow-2xl p-4">
+    <div className="glass-card rounded-2xl overflow-hidden p-5">
       <div className="mb-4">
-        <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Synapse Directory</h4>
-        <p className="text-xs text-zinc-500">Explore and sort all computed talk relationships</p>
+        <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+          Synapse Directory
+        </h4>
+        <p className="text-[10px] text-zinc-500 mt-0.5">
+          Explore and sort all computed talk relationships
+        </p>
       </div>
 
       <Grid
@@ -92,13 +104,33 @@ export default function TopSynapsesGrid({ synapses }: TopSynapsesGridProps) {
         sortable={true}
         sort={sort}
         onSortChange={(e) => setSort(e.sort)}
-        className="k-grid-dark font-sans border-zinc-800 bg-zinc-950 text-zinc-300 text-xs"
-        rowHeight={95}
+        className="k-grid-dark text-xs"
+        rowHeight={90}
       >
-        <GridColumn field="connection" title="Connected Sessions" cells={{ data: ConnectionCell }} width="350px" sortable={false} />
-        <GridColumn field="type" title="Relationship Type" cells={{ data: TypeCell }} width="140px" />
-        <GridColumn field="strength" title="Strength" cells={{ data: StrengthCell }} width="120px" />
-        <GridColumn field="insight" title="Semantic Synthesis" className="text-zinc-400 font-sans text-xs leading-relaxed" />
+        <GridColumn
+          field="connection"
+          title="Connected Sessions"
+          cells={{ data: ConnectionCell }}
+          width="340px"
+          sortable={false}
+        />
+        <GridColumn
+          field="type"
+          title="Type"
+          cells={{ data: TypeCell }}
+          width="140px"
+        />
+        <GridColumn
+          field="strength"
+          title="Strength"
+          cells={{ data: StrengthCell }}
+          width="140px"
+        />
+        <GridColumn
+          field="insight"
+          title="Semantic Insight"
+          className="text-zinc-400 text-xs leading-relaxed"
+        />
       </Grid>
     </div>
   );

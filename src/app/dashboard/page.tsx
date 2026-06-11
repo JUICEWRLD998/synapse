@@ -4,9 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import Header from "@/components/ui/Header";
 import AnalyticsCharts from "@/components/dashboard/AnalyticsCharts";
 import TopSynapsesGrid from "@/components/dashboard/TopSynapsesGrid";
-import { LayoutDashboard, Users, Flame, Network } from "lucide-react";
+import { LayoutDashboard, Users, Flame, Network, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Talk, Synapse } from "@/types";
+
+interface TalkLeaderboardEntry {
+  id: string;
+  title: string;
+  speaker: string;
+  company: string;
+  track: string;
+  connections: number;
+  avgStrength: number;
+}
 
 /* ---- Animated KPI Counter ---- */
 function KpiCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -47,19 +58,23 @@ function KpiCounter({ target, suffix = "" }: { target: number; suffix?: string }
 export default function DashboardPage() {
   const [talks, setTalks] = useState<Talk[]>([]);
   const [synapses, setSynapses] = useState<Synapse[]>([]);
+  const [leaderboard, setLeaderboard] = useState<TalkLeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const [tRes, sRes] = await Promise.all([
+        const [tRes, sRes, aRes] = await Promise.all([
           fetch("/api/talks"),
           fetch("/api/synapses"),
+          fetch("/api/analytics"),
         ]);
         const tData = await tRes.json();
         const sData = await sRes.json();
+        const aData = await aRes.json();
         if (tData.success) setTalks(tData.talks);
         if (sData.success) setSynapses(sData.synapses);
+        if (aData.success) setLeaderboard(aData.analytics.talkLeaderboard);
       } catch (e) {
         console.error("Dashboard load error:", e);
       } finally {
@@ -200,6 +215,89 @@ export default function DashboardPage() {
             >
               <TopSynapsesGrid synapses={synapses} />
             </motion.div>
+
+            {/* Synapse Leaderboard — most-connected talks */}
+            {leaderboard.length > 0 && (
+              <motion.div
+                className="glass-card rounded-2xl p-5 space-y-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.5 }}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <Trophy className="h-4 w-4 text-amber-400" />
+                  <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Synapse Leaderboard
+                  </h4>
+                  <span className="text-[10px] text-zinc-600 ml-auto">
+                    Most-connected sessions
+                  </span>
+                </div>
+
+                <ol className="space-y-2">
+                  {leaderboard.slice(0, 8).map((entry, idx) => (
+                    <li
+                      key={entry.id}
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.02] transition-colors group"
+                    >
+                      {/* Rank */}
+                      <span
+                        className={`text-sm font-bold tabular-nums w-6 text-center shrink-0 ${
+                          idx === 0
+                            ? "text-amber-400"
+                            : idx === 1
+                            ? "text-zinc-300"
+                            : idx === 2
+                            ? "text-amber-600"
+                            : "text-zinc-600"
+                        }`}
+                      >
+                        {idx + 1}
+                      </span>
+
+                      {/* Talk info */}
+                      <div className="flex-1 min-w-0">
+                        <Link
+                          href={`/talks/${entry.id}`}
+                          className="text-xs font-medium text-zinc-200 group-hover:text-violet-300 transition-colors truncate block"
+                        >
+                          {entry.title}
+                        </Link>
+                        <div className="text-[10px] text-zinc-500 mt-0.5 truncate">
+                          {entry.speaker}
+                          {entry.company ? ` · ${entry.company}` : ""}
+                        </div>
+                      </div>
+
+                      {/* Connection count */}
+                      <div className="shrink-0 text-right">
+                        <div className="text-sm font-bold text-white tabular-nums">
+                          {entry.connections}
+                        </div>
+                        <div className="text-[9px] text-zinc-600 uppercase tracking-wider">
+                          synapses
+                        </div>
+                      </div>
+
+                      {/* Avg strength bar */}
+                      <div className="shrink-0 w-16 hidden sm:block">
+                        <div className="h-1.5 rounded-full bg-white/[0.04] overflow-hidden">
+                          <div
+                            className="h-1.5 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500"
+                            style={{
+                              width: `${Math.round(entry.avgStrength * 100)}%`,
+                            }}
+                          />
+                        </div>
+                        <div className="text-[9px] text-zinc-600 mt-0.5 text-right tabular-nums">
+                          {Math.round(entry.avgStrength * 100)}% avg
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </motion.div>
+            )}
           </>
         )}
       </main>

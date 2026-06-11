@@ -79,6 +79,8 @@ export default function SchedulePage() {
     }
   };
 
+  const [scheduleDay, setScheduleDay] = useState<1 | 2>(1);
+
   const schedulerData = talks.map((t) => ({
     id: t.id,
     title: t.title,
@@ -230,26 +232,44 @@ export default function SchedulePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <div className="mb-4">
-                <h3 className="text-sm font-semibold text-zinc-200">
-                  Interactive Time Slots
-                </h3>
-                <p className="text-xs text-zinc-500 mt-0.5">
-                  Color-coded by track. Click sessions for details.
-                </p>
+              <div className="mb-4 flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <h3 className="text-sm font-semibold text-zinc-200">
+                    Interactive Time Slots
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Color-coded by track. Click sessions for details.
+                  </p>
+                </div>
+                {/* Day switcher */}
+                <div className="flex items-center gap-1 glass rounded-lg p-1">
+                  {([1, 2] as const).map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => setScheduleDay(d)}
+                      className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                        scheduleDay === d
+                          ? "bg-violet-600 text-white shadow"
+                          : "text-zinc-400 hover:text-zinc-200"
+                      }`}
+                    >
+                      Day {d} — June {d === 1 ? "12" : "13"}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="rounded-xl overflow-hidden">
                 <Scheduler
                   data={schedulerData}
                   resources={resources}
-                  date={new Date("2026-06-12")}
+                  date={scheduleDay === 1 ? new Date("2026-06-12") : new Date("2026-06-13")}
                   defaultView="day"
                   timezone="Etc/UTC"
                   style={{ height: 480 }}
                 >
                   <DayView
-                    title="Day 1 (June 12)"
+                    title={`Day ${scheduleDay} (June ${scheduleDay === 1 ? "12" : "13"})`}
                     startTime="09:00"
                     endTime="17:00"
                   />

@@ -1,19 +1,16 @@
 // src/utils/seedData.ts
-
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 const speakersData = [
   {
     name: "Dan Abramov",
     company: "Bluesky",
     bio: "Former React core team member, currently working on Bluesky social network architectures.",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
   },
   {
     name: "Sophie Alpert",
-    company: "Independent",
+    company: "Vercel",
     bio: "Former React core team manager, expert in frontend performance and compiler optimizations.",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
   },
@@ -21,7 +18,7 @@ const speakersData = [
     name: "Guillermo Rauch",
     company: "Vercel",
     bio: "CEO of Vercel, creator of Next.js, passionate about serverless rendering and edge network deployment.",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80"
   },
   {
     name: "Lee Robinson",
@@ -39,13 +36,13 @@ const speakersData = [
     name: "Alex Sexton",
     company: "Stripe",
     bio: "Infrastructure engineer specialized in internationalization, security, and global payments systems.",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80"
+    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80"
   },
   {
     name: "Theo Browne",
     company: "Ping.gg",
     bio: "CEO of Ping.gg, creator of t3-app, and tech commentator speaking on modern web stacks.",
-    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80"
+    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80"
   },
   {
     name: "Una Kravets",
@@ -63,18 +60,22 @@ const speakersData = [
     name: "Rich Harris",
     company: "Vercel",
     bio: "Creator of Svelte and Rollup, focused on compilation in UI design and removing runtime overhead.",
-    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80"
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
   }
 ];
 
 const tracksData = [
-  { id: "track-a", name: "Track A: React & Core Architecture", color: "#8B5CF6" }, // Purple
-  { id: "track-b", name: "Track B: Devtools, AI & Performance", color: "#06B6D4" }  // Cyan
+  { id: "track-a", name: "Track A: React & Core Architecture", color: "#8B5CF6" },
+  { id: "track-b", name: "Track B: Devtools, AI & Performance", color: "#06B6D4" }
 ];
 
-const getTalksData = (speakers: any[]) => {
-  const getSpeakerId = (name: string) => speakers.find(s => s.name === name).id;
-  
+const getTalksData = (speakers: { id: string; name: string }[]) => {
+  const getSpeakerId = (name: string) => {
+    const speaker = speakers.find(s => s.name === name);
+    if (!speaker) throw new Error(`Speaker not found: ${name}`);
+    return speaker.id;
+  };
+
   return [
     {
       title: "React Server Components: The Execution Model Deep Dive",
@@ -147,7 +148,7 @@ const getTalksData = (speakers: any[]) => {
       day: 1
     },
     {
-      title: "WebAssembly: Elevating Heavy Calculations Beyond JS limits",
+      title: "WebAssembly: Elevating Heavy Calculations Beyond JS Limits",
       abstract: "JavaScript is fast, but image processing, compression, cryptographic algorithms, and canvas renders push V8 to its limits. Learn to write Rust and C++ modules, compile them to WebAssembly (Wasm), and load them dynamically in React applications. We cover memory buffers, serialization overhead, worker threads, and multi-threaded calculations.",
       tags: ["wasm", "performance", "rust", "computations"],
       trackId: "track-b",
@@ -175,14 +176,64 @@ const getTalksData = (speakers: any[]) => {
       startTime: new Date("2026-06-12T15:30:00Z"),
       endTime: new Date("2026-06-12T16:15:00Z"),
       day: 1
+    },
+    {
+      title: "TypeScript Performance Patterns for Large Codebases",
+      abstract: "TypeScript type-checking can slow CI pipelines and IDE responsiveness in large monorepos. This talk covers incremental compilation strategies, project references, const enums vs regular enums, and conditional types that accidentally create exponential complexity. We share benchmarks from migrating a 2M-line codebase to TypeScript 5.5 isolatedDeclarations.",
+      tags: ["typescript", "performance", "tooling", "dx"],
+      trackId: "track-b",
+      speakerId: getSpeakerId("Sarah Drasner"),
+      startTime: new Date("2026-06-12T15:30:00Z"),
+      endTime: new Date("2026-06-12T16:15:00Z"),
+      day: 1
+    },
+    {
+      title: "The Future of Streaming: Suspense, PPR, and Partial Hydration",
+      abstract: "Next.js Partial Prerendering (PPR) combines static shells with dynamic streaming slots. Dan dives deep into how Suspense boundaries interact with RSC streaming, how PPR differs from Islands Architecture, and how to architect pages for the fastest possible time-to-interactive. Live debugging with React DevTools Profiler included.",
+      tags: ["react", "nextjs", "streaming", "ssr"],
+      trackId: "track-a",
+      speakerId: getSpeakerId("Dan Abramov"),
+      startTime: new Date("2026-06-13T09:30:00Z"),
+      endTime: new Date("2026-06-13T10:15:00Z"),
+      day: 2
+    },
+    {
+      title: "Modern Monorepo Architecture with Turborepo",
+      abstract: "Turborepo caches build artifacts across machines, but the real value is the architectural discipline it enforces. We walk through setting up a Next.js monorepo with shared packages, isolated component libraries, and versioned API clients. Topics include remote caching, task pipelines, and handling breaking changes across internal packages without a publishing step.",
+      tags: ["monorepo", "tooling", "architecture", "dx"],
+      trackId: "track-b",
+      speakerId: getSpeakerId("Lee Robinson"),
+      startTime: new Date("2026-06-13T09:30:00Z"),
+      endTime: new Date("2026-06-13T10:15:00Z"),
+      day: 2
+    },
+    {
+      title: "Signals vs. VDOM: A Framework War Analysis",
+      abstract: "Fine-grained reactivity via Signals (Solid.js, Preact Signals, Angular) versus coarse-grained Virtual DOM reconciliation (React, Vue) represent two fundamentally different philosophies. We benchmark real-world scenarios — large data tables, real-time dashboards, animated lists — and discuss where each model shines, and what React's compiler is doing to close the gap.",
+      tags: ["signals", "react", "performance", "frameworks"],
+      trackId: "track-a",
+      speakerId: getSpeakerId("Rich Harris"),
+      startTime: new Date("2026-06-13T10:30:00Z"),
+      endTime: new Date("2026-06-13T11:15:00Z"),
+      day: 2
+    },
+    {
+      title: "Micro-Frontends at Scale: Module Federation 2.0",
+      abstract: "Module Federation 2.0 introduces dynamic remote containers, better TypeScript support, and manifest-driven discovery. We show how large enterprise teams at scale use MFE to allow 50+ squads to deploy independently while sharing a design system and authentication state. We cover the pitfalls: version conflicts, shared singleton state, and testing strategies.",
+      tags: ["micro-frontends", "module-federation", "architecture", "scalability"],
+      trackId: "track-b",
+      speakerId: getSpeakerId("Guillermo Rauch"),
+      startTime: new Date("2026-06-13T10:30:00Z"),
+      endTime: new Date("2026-06-13T11:15:00Z"),
+      day: 2
     }
   ];
 };
 
 export async function seedDatabase() {
-  console.log("Starting DB seeding...");
-  
-  // Clear existing data (order matters for constraints)
+  console.log("🌱 Starting database seed...");
+
+  // Clear in reverse dependency order
   await prisma.attendance.deleteMany({});
   await prisma.briefing.deleteMany({});
   await prisma.synapse.deleteMany({});
@@ -190,27 +241,28 @@ export async function seedDatabase() {
   await prisma.speaker.deleteMany({});
   await prisma.track.deleteMany({});
   await prisma.user.deleteMany({});
-  
-  console.log("Database cleared.");
+
+  console.log("🗑️  Database cleared.");
 
   // Seed Tracks
   for (const track of tracksData) {
     await prisma.track.create({ data: track });
   }
-  console.log("Tracks seeded.");
+  console.log("✅ Tracks seeded (2 tracks).");
 
   // Seed Speakers
-  const createdSpeakers = [];
+  const createdSpeakers: { id: string; name: string }[] = [];
   for (const speaker of speakersData) {
     const s = await prisma.speaker.create({ data: speaker });
-    createdSpeakers.push(s);
+    createdSpeakers.push({ id: s.id, name: s.name });
   }
-  console.log("Speakers seeded.");
+  console.log(`✅ Speakers seeded (${createdSpeakers.length} speakers).`);
 
   // Seed Talks
   const talks = getTalksData(createdSpeakers);
   for (const talk of talks) {
     await prisma.talk.create({ data: talk });
   }
-  console.log("Talks seeded successfully.");
+  console.log(`✅ Talks seeded (${talks.length} talks).`);
+  console.log("🎉 Database seed complete!");
 }

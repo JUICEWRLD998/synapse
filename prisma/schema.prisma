@@ -1,0 +1,92 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Speaker {
+  id        String   @id @default(uuid())
+  name      String
+  bio       String
+  avatar    String?
+  company   String?
+  talks     Talk[]
+}
+
+model Track {
+  id        String   @id
+  name      String
+  color     String   // Hex color
+  talks     Talk[]
+}
+
+model Talk {
+  id          String       @id @default(uuid())
+  title       String
+  abstract    String
+  tags        String[]     // Postgres array
+  trackId     String
+  track       Track        @relation(fields: [trackId], references: [id])
+  speakerId   String
+  speaker     Speaker      @relation(fields: [speakerId], references: [id])
+  startTime   DateTime
+  endTime     DateTime
+  day         Int
+  
+  // Relations for Synapses
+  synapsesAsA Synapse[]    @relation("TalkA")
+  synapsesAsB Synapse[]    @relation("TalkB")
+  
+  // Attendee attendance
+  attendees   Attendance[]
+}
+
+model Synapse {
+  id                  String   @id @default(uuid())
+  talkAId             String
+  talkA               Talk     @relation("TalkA", fields: [talkAId], references: [id], onDelete: Cascade)
+  talkBId             String
+  talkB               Talk     @relation("TalkB", fields: [talkBId], references: [id], onDelete: Cascade)
+  type                String   // complementary | contradictory | foundational | cross-domain | evolutionary
+  strength            Float    // 0.0 - 1.0
+  insight             String   @db.Text
+  concepts            String[]
+  attendeeImplication String   @db.Text
+  createdAt           DateTime @default(now())
+
+  @@unique([talkAId, talkBId])
+}
+
+model User {
+  id          String       @id @default(uuid())
+  email       String?      @unique
+  name        String?
+  attendance  Attendance[]
+  briefing    Briefing?
+  createdAt   DateTime     @default(now())
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  talkId    String
+  talk      Talk     @relation(fields: [talkId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, talkId])
+}
+
+model Briefing {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content       Json     // Structured briefing from AI
+  conferenceDna String   @db.Text
+  createdAt     DateTime @default(now())
+}

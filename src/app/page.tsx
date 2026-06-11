@@ -344,6 +344,7 @@ export default function Home() {
                   src="/hero-synapse.png"
                   alt="Neural network visualization"
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 768px"
                   className="object-cover"
                   priority
                 />

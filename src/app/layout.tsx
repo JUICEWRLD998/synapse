@@ -27,7 +27,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#09090b] text-white">
+      <body className="min-h-full flex flex-col bg-[#09090b] text-white" suppressHydrationWarning>
         {/* Subtle background dot pattern */}
         <div className="fixed inset-0 bg-dot-pattern pointer-events-none opacity-50 z-0" />
         {/* Content layer */}

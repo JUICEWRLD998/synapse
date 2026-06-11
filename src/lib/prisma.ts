@@ -9,9 +9,17 @@ const globalForPrisma = globalThis as unknown as {
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   // Wake Neon's serverless instance quickly — fail fast instead of hanging.
-  connectionTimeoutMillis: 10_000,  // give up acquiring a connection after 10s
+  connectionTimeoutMillis: 15_000,  // give up acquiring a connection after 15s
   idleTimeoutMillis:       30_000,  // release idle connections after 30s
   max:                     5,       // keep the pool small for serverless
+  keepAlive:               true,    // maintain TCP connection
+  keepAliveInitialDelayMillis: 10_000,
+});
+
+// Add connection error handlers to prevent "Connection terminated unexpectedly" crashes
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle Postgres client:', err);
+  // Don't crash the process — let withRetry() handle reconnection
 });
 
 const adapter = new PrismaPg(pool);
@@ -26,7 +34,7 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 /**
- * Retry a Prisma operation up to `maxAttempts` times with exponential back-off.
+ * Retry a Prisma operation up to `maxAttempts` times with exponential back-off + jitter.
  * Useful for cold-start ETIMEDOUT errors from Neon serverless.
  */
 export async function withRetry<T>(
@@ -40,14 +48,19 @@ export async function withRetry<T>(
       return await fn();
     } catch (err) {
       lastError = err;
-      const isTimeout =
+      const isRetryable =
         err instanceof Error &&
         (err.message.includes("ETIMEDOUT") ||
           err.message.includes("Connection timed out") ||
-          err.message.includes("connection timeout"));
-      if (!isTimeout || attempt === maxAttempts) throw err;
-      const delay = baseDelayMs * 2 ** (attempt - 1); // 500ms, 1000ms
-      console.warn(`DB timeout on attempt ${attempt}/${maxAttempts}, retrying in ${delay}ms…`);
+          err.message.includes("connection timeout") ||
+          err.message.includes("Connection terminated unexpectedly") ||
+          err.message.includes("Connection ended unexpectedly"));
+      if (!isRetryable || attempt === maxAttempts) throw err;
+      // Exponential backoff with jitter: 500–750ms, 1000–1500ms, 2000–3000ms
+      const baseDelay = baseDelayMs * 2 ** (attempt - 1);
+      const jitter = Math.random() * baseDelay * 0.5;
+      const delay = Math.floor(baseDelay + jitter);
+      console.warn(`DB error on attempt ${attempt}/${maxAttempts}, retrying in ${delay}ms…`);
       await new Promise((r) => setTimeout(r, delay));
     }
   }

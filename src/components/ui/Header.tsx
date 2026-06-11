@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Activity,
   LayoutDashboard,
@@ -17,12 +17,19 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const navItems = [
     { name: "Explore", href: "/explore", icon: Network },
     { name: "Schedule", href: "/schedule", icon: Calendar },
     { name: "Briefing", href: "/briefing", icon: Sparkles },
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Analytics", href: "/analytics", icon: LayoutDashboard },
   ];
 
   return (
@@ -30,7 +37,9 @@ export default function Header() {
       {/* Gradient top accent line */}
       <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
 
-      <div className="glass-strong">
+      <div className={`glass-strong transition-all duration-300 ${scrolled ? "shadow-lg shadow-black/20" : "shadow-none"}`}
+        style={{ background: scrolled ? "rgba(9,9,11,0.92)" : "rgba(15,15,18,0.8)" }}
+      >
         <div className="mx-auto flex max-w-7xl h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
@@ -130,7 +139,13 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-[57px] right-0 bottom-0 w-64 glass-strong z-50 md:hidden p-4"
+              className="fixed top-[57px] right-0 bottom-0 w-64 z-50 md:hidden p-4"
+              style={{
+                background: "rgba(9, 9, 11, 0.97)",
+                backdropFilter: "blur(24px) saturate(1.4)",
+                WebkitBackdropFilter: "blur(24px) saturate(1.4)",
+                borderLeft: "1px solid rgba(255, 255, 255, 0.08)",
+              }}
             >
               <nav className="flex flex-col gap-1">
                 {navItems.map((item) => {

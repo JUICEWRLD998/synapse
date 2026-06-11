@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useRef } from "react";
 import {
   Scheduler,
   DayView,
@@ -16,10 +16,72 @@ import {
   Clock,
   Check,
   Plus,
+  CheckCircle2,
+  MinusCircle,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/Header";
 import { Talk, Track, Speaker } from "@/types";
+
+/* ---- Attendance Toast ---- */
+interface ToastMsg { id: number; text: string; type: "add" | "remove" }
+
+function AttendanceToast({ toasts }: { toasts: ToastMsg[] }) {
+  return (
+    <div className="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none">
+      <AnimatePresence>
+        {toasts.map((t) => (
+          <motion.div
+            key={t.id}
+            initial={{ opacity: 0, y: 12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.95 }}
+            transition={{ duration: 0.25 }}
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold glass-strong shadow-lg ${
+              t.type === "add"
+                ? "text-emerald-300 border-emerald-500/20"
+                : "text-zinc-400 border-white/[0.06]"
+            }`}
+          >
+            {t.type === "add" ? (
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+            ) : (
+              <MinusCircle className="h-3.5 w-3.5 text-zinc-500 shrink-0" />
+            )}
+            {t.text}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ---- Rolling number for attendance counter ---- */
+function RollingNumber({ value }: { value: number }) {
+  const [display, setDisplay] = useState(value);
+  const prev = useRef(value);
+
+  useEffect(() => {
+    if (value === prev.current) return;
+    prev.current = value;
+    setDisplay(value);
+  }, [value]);
+
+  return (
+    <AnimatePresence mode="popLayout">
+      <motion.span
+        key={display}
+        initial={{ y: display > prev.current ? -14 : 14, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: display > prev.current ? 14 : -14, opacity: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="inline-block font-semibold text-white tabular-nums"
+      >
+        {display}
+      </motion.span>
+    </AnimatePresence>
+  );
+}
 
 export default function SchedulePage() {
   const [talks, setTalks] = useState<Talk[]>([]);
@@ -29,6 +91,8 @@ export default function SchedulePage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTalk, setSelectedTalk] = useState<Talk | null>(null);
+  const [toasts, setToasts] = useState<ToastMsg[]>([]);
+  const toastCounter = useRef(0);
   const [, startTransition] = useTransition();
 
   const loadData = async () => {
@@ -57,12 +121,24 @@ export default function SchedulePage() {
     loadData();
   }, []);
 
+  const showToast = (text: string, type: "add" | "remove") => {
+    const id = ++toastCounter.current;
+    setToasts((prev) => [...prev, { id, text, type }]);
+    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 2500);
+  };
+
   const handleToggleAttendance = async (
     talkId: string,
     isAttending: boolean
   ) => {
     setAttendedIds((prev) =>
       isAttending ? [...prev, talkId] : prev.filter((id) => id !== talkId)
+    );
+    const talkTitle = talks.find((t) => t.id === talkId)?.title ?? "Session";
+    const shortTitle = talkTitle.length > 40 ? talkTitle.slice(0, 40) + "…" : talkTitle;
+    showToast(
+      isAttending ? `Added: ${shortTitle}` : `Removed: ${shortTitle}`,
+      isAttending ? "add" : "remove"
     );
 
     try {
@@ -191,6 +267,7 @@ export default function SchedulePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <AttendanceToast toasts={toasts} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
         {/* Page Header */}
@@ -208,12 +285,10 @@ export default function SchedulePage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 glass px-3 py-2 rounded-lg">
-            <Check className="h-3.5 w-3.5 text-emerald-400" />
+          <div className="flex items-center gap-2 glass px-3 py-2 rounded-lg overflow-hidden">
+            <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
             <span className="text-xs text-zinc-300">
-              <span className="font-semibold text-white">
-                {attendedIds.length}
-              </span>{" "}
+              <RollingNumber value={attendedIds.length} />{" "}
               / {talks.length} sessions
             </span>
           </div>

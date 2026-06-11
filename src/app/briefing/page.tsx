@@ -198,18 +198,28 @@ export default function BriefingPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Conference DNA */}
               <motion.div
-                className="glass-card rounded-2xl p-6 space-y-3 border-l-2 border-l-violet-500/30"
+                className="relative rounded-2xl p-6 space-y-3 border border-violet-500/20 overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <div className="flex items-center gap-2">
+                {/* Animated gradient background */}
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-60"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(99,102,241,0.08) 50%, rgba(6,182,212,0.10) 100%)",
+                    backgroundSize: "200% 200%",
+                    animation: "gradient-flow 8s ease infinite",
+                  }}
+                />
+                <div className="absolute inset-0 rounded-2xl" style={{ backdropFilter: "blur(12px)", background: "rgba(9,9,11,0.3)" }} />
+                <div className="relative z-10 flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-violet-400" />
-                  <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                  <h3 className="text-xs font-semibold text-violet-300/80 uppercase tracking-wider">
                     Conference DNA Profile
                   </h3>
                 </div>
-                <p className="text-sm text-zinc-300 leading-relaxed italic">
+                <p className="relative z-10 text-sm text-zinc-200 leading-relaxed italic font-medium">
                   &ldquo;{briefing.conferenceDna}&rdquo;
                 </p>
               </motion.div>

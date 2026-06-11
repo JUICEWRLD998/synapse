@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
-// Import KendoReact Premium Dark Theme CSS
 import "@progress/kendo-theme-default/dist/default-main-dark.css";
 
 const inter = Inter({
@@ -15,14 +13,7 @@ export const metadata: Metadata = {
   title: "Synapse — AI Conference Intelligence Platform",
   description:
     "Discover hidden connections between conference talks with AI-powered semantic analysis. Build personalized schedules, explore knowledge graphs, and generate intelligent briefings.",
-  keywords: [
-    "conference",
-    "AI",
-    "knowledge graph",
-    "GitNation",
-    "hackathon",
-    "KendoReact",
-  ],
+  keywords: ["conference", "AI", "knowledge graph", "GitNation", "hackathon", "KendoReact"],
   openGraph: {
     title: "Synapse — AI Conference Intelligence",
     description:
@@ -33,13 +24,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#09090b] text-white">
-        {/* Subtle background grid pattern */}
+        {/* Subtle background dot pattern */}
         <div className="fixed inset-0 bg-dot-pattern pointer-events-none opacity-50 z-0" />
         {/* Content layer */}
         <div className="relative z-10 flex flex-col min-h-full">

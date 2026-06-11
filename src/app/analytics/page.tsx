@@ -55,7 +55,7 @@ function KpiCounter({ target, suffix = "" }: { target: number; suffix?: string }
   );
 }
 
-export default function DashboardPage() {
+export default function AnalyticsPage() {
   const [talks, setTalks] = useState<Talk[]>([]);
   const [synapses, setSynapses] = useState<Synapse[]>([]);
   const [leaderboard, setLeaderboard] = useState<TalkLeaderboardEntry[]>([]);
@@ -76,7 +76,7 @@ export default function DashboardPage() {
         if (sData.success) setSynapses(sData.synapses);
         if (aData.success) setLeaderboard(aData.analytics.talkLeaderboard);
       } catch (e) {
-        console.error("Dashboard load error:", e);
+        console.error("Analytics load error:", e);
       } finally {
         setLoading(false);
       }
@@ -87,53 +87,19 @@ export default function DashboardPage() {
   const uniqueSpeakers = new Set(talks.map((t) => t.speakerId)).size;
   const avgStrength =
     synapses.length > 0
-      ? (synapses.reduce((sum, s) => sum + s.strength, 0) / synapses.length) *
-        100
+      ? (synapses.reduce((sum, s) => sum + s.strength, 0) / synapses.length) * 100
       : 0;
 
   const kpis = [
-    {
-      label: "Total Sessions",
-      value: talks.length,
-      suffix: "",
-      icon: Flame,
-      color: "violet",
-    },
-    {
-      label: "Speakers",
-      value: uniqueSpeakers,
-      suffix: "",
-      icon: Users,
-      color: "cyan",
-    },
-    {
-      label: "Avg. Strength",
-      value: Math.round(avgStrength),
-      suffix: "%",
-      icon: Network,
-      color: "emerald",
-    },
+    { label: "Total Sessions", value: talks.length,          suffix: "", icon: Flame,   color: "violet"  },
+    { label: "Speakers",       value: uniqueSpeakers,        suffix: "", icon: Users,   color: "cyan"    },
+    { label: "Avg. Strength",  value: Math.round(avgStrength), suffix: "%", icon: Network, color: "emerald" },
   ];
 
   const kpiColorMap: Record<string, { bg: string; text: string; border: string; gradient: string }> = {
-    violet: {
-      bg: "bg-violet-500/8",
-      text: "text-violet-400",
-      border: "border-violet-500/15",
-      gradient: "from-violet-500/10 to-violet-500/0",
-    },
-    cyan: {
-      bg: "bg-cyan-500/8",
-      text: "text-cyan-400",
-      border: "border-cyan-500/15",
-      gradient: "from-cyan-500/10 to-cyan-500/0",
-    },
-    emerald: {
-      bg: "bg-emerald-500/8",
-      text: "text-emerald-400",
-      border: "border-emerald-500/15",
-      gradient: "from-emerald-500/10 to-emerald-500/0",
-    },
+    violet:  { bg: "bg-violet-500/8",  text: "text-violet-400",  border: "border-violet-500/15",  gradient: "from-violet-500/10 to-violet-500/0"  },
+    cyan:    { bg: "bg-cyan-500/8",    text: "text-cyan-400",    border: "border-cyan-500/15",    gradient: "from-cyan-500/10 to-cyan-500/0"      },
+    emerald: { bg: "bg-emerald-500/8", text: "text-emerald-400", border: "border-emerald-500/15", gradient: "from-emerald-500/10 to-emerald-500/0" },
   };
 
   return (
@@ -148,7 +114,7 @@ export default function DashboardPage() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/15">
                 <LayoutDashboard className="h-4 w-4" />
               </div>
-              Analytics Dashboard
+              Analytics
             </h1>
             <p className="text-sm text-zinc-400">
               Content distribution analytics, connection density, and semantic
@@ -176,10 +142,7 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: i * 0.1 }}
                   >
-                    {/* Subtle gradient accent */}
-                    <div
-                      className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${c.gradient}`}
-                    />
+                    <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${c.gradient}`} />
                     <div className="space-y-1">
                       <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
                         {kpi.label}
@@ -188,9 +151,7 @@ export default function DashboardPage() {
                         <KpiCounter target={kpi.value} suffix={kpi.suffix} />
                       </div>
                     </div>
-                    <div
-                      className={`h-9 w-9 ${c.bg} border ${c.border} ${c.text} rounded-xl flex items-center justify-center`}
-                    >
+                    <div className={`h-9 w-9 ${c.bg} border ${c.border} ${c.text} rounded-xl flex items-center justify-center`}>
                       <Icon className="h-4 w-4" />
                     </div>
                   </motion.div>
@@ -207,7 +168,7 @@ export default function DashboardPage() {
               <AnalyticsCharts talks={talks} synapses={synapses} />
             </motion.div>
 
-            {/* Synapse Grid */}
+            {/* Synapse Directory Grid */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -216,7 +177,7 @@ export default function DashboardPage() {
               <TopSynapsesGrid synapses={synapses} />
             </motion.div>
 
-            {/* Synapse Leaderboard — most-connected talks */}
+            {/* Synapse Leaderboard */}
             {leaderboard.length > 0 && (
               <motion.div
                 className="glass-card rounded-2xl p-5 space-y-4"
@@ -229,9 +190,7 @@ export default function DashboardPage() {
                   <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                     Synapse Leaderboard
                   </h4>
-                  <span className="text-[10px] text-zinc-600 ml-auto">
-                    Most-connected sessions
-                  </span>
+                  <span className="text-[10px] text-zinc-600 ml-auto">Most-connected sessions</span>
                 </div>
 
                 <ol className="space-y-2">
@@ -240,22 +199,12 @@ export default function DashboardPage() {
                       key={entry.id}
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.02] transition-colors group"
                     >
-                      {/* Rank */}
-                      <span
-                        className={`text-sm font-bold tabular-nums w-6 text-center shrink-0 ${
-                          idx === 0
-                            ? "text-amber-400"
-                            : idx === 1
-                            ? "text-zinc-300"
-                            : idx === 2
-                            ? "text-amber-600"
-                            : "text-zinc-600"
-                        }`}
-                      >
+                      <span className={`text-sm font-bold tabular-nums w-6 text-center shrink-0 ${
+                        idx === 0 ? "text-amber-400" : idx === 1 ? "text-zinc-300" : idx === 2 ? "text-amber-600" : "text-zinc-600"
+                      }`}>
                         {idx + 1}
                       </span>
 
-                      {/* Talk info */}
                       <div className="flex-1 min-w-0">
                         <Link
                           href={`/talks/${entry.id}`}
@@ -264,29 +213,20 @@ export default function DashboardPage() {
                           {entry.title}
                         </Link>
                         <div className="text-[10px] text-zinc-500 mt-0.5 truncate">
-                          {entry.speaker}
-                          {entry.company ? ` · ${entry.company}` : ""}
+                          {entry.speaker}{entry.company ? ` · ${entry.company}` : ""}
                         </div>
                       </div>
 
-                      {/* Connection count */}
                       <div className="shrink-0 text-right">
-                        <div className="text-sm font-bold text-white tabular-nums">
-                          {entry.connections}
-                        </div>
-                        <div className="text-[9px] text-zinc-600 uppercase tracking-wider">
-                          synapses
-                        </div>
+                        <div className="text-sm font-bold text-white tabular-nums">{entry.connections}</div>
+                        <div className="text-[9px] text-zinc-600 uppercase tracking-wider">synapses</div>
                       </div>
 
-                      {/* Avg strength bar */}
                       <div className="shrink-0 w-16 hidden sm:block">
                         <div className="h-1.5 rounded-full bg-white/[0.04] overflow-hidden">
                           <div
                             className="h-1.5 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500"
-                            style={{
-                              width: `${Math.round(entry.avgStrength * 100)}%`,
-                            }}
+                            style={{ width: `${Math.round(entry.avgStrength * 100)}%` }}
                           />
                         </div>
                         <div className="text-[9px] text-zinc-600 mt-0.5 text-right tabular-nums">

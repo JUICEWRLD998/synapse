@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { callGemini } from "@/lib/gemini";
+import { callGeminiWithRetry } from "@/lib/gemini";
 import { seedSynapses } from "@/utils/synapseData";
 
 export async function GET() {
@@ -97,7 +97,11 @@ Find meaningful connections between pairs of talks (at least 6-8 total). For eac
         throw new Error("Invalid Gemini API key");
       }
       
-      const aiResponse = await callGemini(prompt);
+      const aiResponse = await callGeminiWithRetry(prompt, {
+        maxAttempts: 3,
+        baseDelayMs: 2000,
+        perAttemptTimeoutMs: 30_000,
+      });
       // Clean potential markdown wrap
       const cleanJson = aiResponse.replace(/```json/g, "").replace(/```/g, "").trim();
       synapsesData = JSON.parse(cleanJson);

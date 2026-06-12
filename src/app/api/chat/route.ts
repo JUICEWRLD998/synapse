@@ -1,18 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma, withRetry } from "@/lib/prisma";
-import { callGemini } from "@/lib/gemini";
+import { callGeminiWithRetry } from "@/lib/gemini";
 
 const DEMO_USER_ID = "demo-user";
-
-/** Race callGemini against a timeout so we fail fast and fall back. */
-function callGeminiWithTimeout(prompt: string, ms = 8000): Promise<string> {
-  return Promise.race([
-    callGemini(prompt),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Gemini timeout after ${ms}ms`)), ms)
-    ),
-  ]);
-}
 
 export async function POST(req: Request) {
   try {
@@ -72,7 +62,11 @@ Attendee's question: "${prompt}"
 
 Respond in 2–3 sentences. Be direct, helpful, and specific to the conference content.`;
 
-      answer = await callGeminiWithTimeout(aiPrompt, 8000);
+      answer = await callGeminiWithRetry(aiPrompt, {
+        maxAttempts: 3,
+        baseDelayMs: 2000,
+        perAttemptTimeoutMs: 8000,
+      });
     } catch (apiError) {
       console.warn("Gemini unavailable, using smart fallback:", (apiError as Error).message);
 

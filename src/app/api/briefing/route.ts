@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma, withRetry } from "@/lib/prisma";
-import { callGemini } from "@/lib/gemini";
+import { callGeminiWithRetry } from "@/lib/gemini";
 
 const DEMO_USER_ID = "demo-user";
 
@@ -199,7 +199,11 @@ Return ONLY a valid JSON object (no markdown, no backticks) matching this shape:
   "recommendedRecordings": [{ "talkId": "", "title": "", "speaker": "", "priority": "High"|"Medium"|"Low", "reason": "" }]
 }`;
 
-    const aiResponse = await callGemini(prompt);
+    const aiResponse = await callGeminiWithRetry(prompt, {
+      maxAttempts: 3,
+      baseDelayMs: 2000,
+      perAttemptTimeoutMs: 30_000,
+    });
     const cleanJson  = aiResponse.replace(/```json/g, "").replace(/```/g, "").trim();
     briefingContent  = JSON.parse(cleanJson);
   } catch (apiError) {

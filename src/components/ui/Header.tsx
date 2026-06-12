@@ -11,6 +11,7 @@ import {
   Network,
   Menu,
   X,
+  Settings,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -30,6 +31,7 @@ export default function Header() {
     { name: "Schedule",  href: "/schedule",  icon: Calendar        },
     { name: "Briefing",  href: "/briefing",  icon: Sparkles        },
     { name: "Analytics", href: "/analytics", icon: LayoutDashboard },
+    { name: "Admin",     href: "/admin",     icon: Settings        },
   ];
 
   return (

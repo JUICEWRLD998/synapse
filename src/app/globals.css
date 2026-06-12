@@ -21,54 +21,9 @@
   --glass-border: rgba(255, 255, 255, 0.06);
   --glow-violet: rgba(139, 92, 246, 0.15);
   --glow-cyan: rgba(6, 182, 212, 0.12);
-
-  /* Tag / chip colours — clearly visible in dark mode */
   --tag-bg:     rgba(39, 39, 42, 0.7);
   --tag-text:   #a1a1aa;
   --tag-border: rgba(63, 63, 70, 0.5);
-}
-
-/* Light-mode overrides — triggered by data-theme="light" on <html> (manual toggle)
-   OR by OS preference if no manual override has been set */
-[data-theme="light"],
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --background: #f4f4f5;
-    --foreground: #09090b;
-    --surface-0: #f4f4f5;
-    --surface-1: #ffffff;
-    --surface-2: #fafafa;
-    --surface-3: #f0f0f1;
-    --surface-4: #e4e4e7;
-    --border-subtle: rgba(161, 161, 170, 0.35);
-    --border-default: rgba(113, 113, 122, 0.5);
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(0, 0, 0, 0.08);
-    --glow-violet: rgba(139, 92, 246, 0.10);
-    --glow-cyan:   rgba(6, 182, 212, 0.08);
-    --tag-bg:     rgba(228, 228, 231, 0.9);
-    --tag-text:   #52525b;
-    --tag-border: rgba(161, 161, 170, 0.4);
-  }
-}
-
-[data-theme="light"] {
-  --background: #f4f4f5;
-  --foreground: #09090b;
-  --surface-0: #f4f4f5;
-  --surface-1: #ffffff;
-  --surface-2: #fafafa;
-  --surface-3: #f0f0f1;
-  --surface-4: #e4e4e7;
-  --border-subtle: rgba(161, 161, 170, 0.35);
-  --border-default: rgba(113, 113, 122, 0.5);
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glow-violet: rgba(139, 92, 246, 0.10);
-  --glow-cyan:   rgba(6, 182, 212, 0.08);
-  --tag-bg:     rgba(228, 228, 231, 0.9);
-  --tag-text:   #52525b;
-  --tag-border: rgba(161, 161, 170, 0.4);
 }
 
 @theme inline {
@@ -86,26 +41,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Bump the base font size slightly so text is easier to read */
   font-size: 15px;
   line-height: 1.6;
 }
 
 /* ---- Custom Scrollbar ---- */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: rgba(113, 113, 122, 0.3);
   border-radius: 999px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(113, 113, 122, 0.5);
-}
+::-webkit-scrollbar-thumb:hover { background: rgba(113, 113, 122, 0.5); }
 
 /* ---- Selection ---- */
 ::selection {
@@ -131,13 +78,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-@media (prefers-color-scheme: light) {
-  .glass-strong {
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(0, 0, 0, 0.09);
-  }
-}
-
 .glass-card {
   background: linear-gradient(
     135deg,
@@ -150,26 +90,6 @@ body {
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.3),
     0 4px 24px rgba(0, 0, 0, 0.25);
-}
-
-@media (prefers-color-scheme: light) {
-  .glass-card {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.9) 0%,
-      rgba(248, 248, 249, 0.8) 100%
-    );
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow:
-      0 0 0 1px rgba(0, 0, 0, 0.04),
-      0 4px 24px rgba(0, 0, 0, 0.08);
-  }
-  .glass-card:hover {
-    border-color: rgba(0, 0, 0, 0.12);
-    box-shadow:
-      0 0 0 1px rgba(0, 0, 0, 0.05),
-      0 8px 32px rgba(0, 0, 0, 0.12);
-  }
 }
 
 .glass-card:hover {
@@ -204,6 +124,9 @@ body {
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -220,102 +143,78 @@ body {
    ======================================================== */
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
 }
 
 @keyframes glow-pulse {
   0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  50%       { opacity: 0.8; }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
+  50%       { transform: translateY(-12px); }
 }
 
 @keyframes float-slow {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(2deg); }
+  50%       { transform: translateY(-20px) rotate(2deg); }
 }
 
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 
 @keyframes ping-ring {
-  75%, 100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
+  75%, 100% { transform: scale(1.5); opacity: 0; }
 }
 
 @keyframes gradient-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
 @keyframes count-up {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes orb-drift-1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -40px) scale(1.05); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
+  33%       { transform: translate(30px, -40px) scale(1.05); }
+  66%       { transform: translate(-20px, 20px) scale(0.95); }
 }
 
 @keyframes orb-drift-2 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-40px, 30px) scale(1.1); }
-  66% { transform: translate(20px, -30px) scale(0.9); }
+  33%       { transform: translate(-40px, 30px) scale(1.1); }
+  66%       { transform: translate(20px, -30px) scale(0.9); }
 }
 
 @keyframes line-draw {
   from { stroke-dashoffset: 100; }
-  to { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 0; }
 }
 
 /* Animation utility classes */
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.5s ease-out forwards;
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float-slow 8s ease-in-out infinite;
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
+.animate-fadeInUp    { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-fadeIn      { animation: fadeIn 0.5s ease-out forwards; }
+.animate-float       { animation: float 6s ease-in-out infinite; }
+.animate-float-slow  { animation: float-slow 8s ease-in-out infinite; }
+.animate-glow-pulse  { animation: glow-pulse 3s ease-in-out infinite; }
 .animate-gradient-flow {
   background-size: 200% 200%;
   animation: gradient-flow 6s ease infinite;
@@ -326,19 +225,14 @@ body {
    ======================================================== */
 
 .bg-grid-pattern {
-  background-image: linear-gradient(
-      rgba(255, 255, 255, 0.02) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 64px 64px;
 }
 
 .bg-dot-pattern {
-  background-image: radial-gradient(
-    rgba(255, 255, 255, 0.04) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -346,18 +240,16 @@ body {
    KENDO UI DARK THEME OVERRIDES
    ======================================================== */
 
-/* Grid overrides */
+/* Grid */
 .k-grid {
   background-color: transparent !important;
   border-color: var(--border-subtle) !important;
   font-family: "Inter", system-ui, sans-serif !important;
 }
-
 .k-grid .k-table-thead {
   background-color: rgba(15, 15, 18, 0.8) !important;
   border-color: var(--border-subtle) !important;
 }
-
 .k-grid .k-table-thead .k-table-th {
   background-color: transparent !important;
   color: #a1a1aa !important;
@@ -368,30 +260,26 @@ body {
   border-color: var(--border-subtle) !important;
   padding: 12px 16px !important;
 }
-
 .k-grid .k-table-tbody .k-table-row {
   background-color: transparent !important;
   border-color: rgba(39, 39, 42, 0.3) !important;
   transition: background-color 0.2s ease;
 }
-
 .k-grid .k-table-tbody .k-table-row:hover {
   background-color: rgba(139, 92, 246, 0.04) !important;
 }
-
 .k-grid .k-table-tbody .k-table-td {
   color: #d4d4d8 !important;
   border-color: rgba(39, 39, 42, 0.3) !important;
   font-size: 13px !important;
 }
-
 .k-grid .k-pager {
   background-color: rgba(15, 15, 18, 0.6) !important;
   border-color: var(--border-subtle) !important;
   color: #a1a1aa !important;
 }
 
-/* Scheduler overrides */
+/* Scheduler */
 .k-scheduler {
   background-color: var(--surface-1) !important;
   border-color: var(--border-subtle) !important;
@@ -399,16 +287,13 @@ body {
   border-radius: 12px !important;
   overflow: hidden !important;
 }
-
 .k-scheduler .k-scheduler-toolbar {
   background-color: rgba(15, 15, 18, 0.8) !important;
   border-color: var(--border-subtle) !important;
 }
-
 .k-scheduler .k-scheduler-head {
   background-color: rgba(15, 15, 18, 0.6) !important;
 }
-
 .k-scheduler .k-event {
   border-radius: 8px !important;
   font-size: 12px !important;
@@ -416,7 +301,7 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Dialog overrides */
+/* Dialog */
 .k-dialog-wrapper .k-dialog {
   background-color: var(--surface-2) !important;
   border: 1px solid var(--border-subtle) !important;
@@ -426,7 +311,6 @@ body {
     0 24px 80px rgba(0, 0, 0, 0.6) !important;
   font-family: "Inter", system-ui, sans-serif !important;
 }
-
 .k-dialog-wrapper .k-dialog .k-dialog-titlebar {
   background-color: transparent !important;
   border-bottom: 1px solid var(--border-subtle) !important;
@@ -434,36 +318,33 @@ body {
   padding: 16px 20px !important;
   font-weight: 600 !important;
 }
-
 .k-dialog-wrapper .k-dialog .k-dialog-content {
   background-color: transparent !important;
   padding: 20px !important;
 }
-
 .k-dialog-wrapper .k-overlay {
   background-color: rgba(0, 0, 0, 0.6) !important;
   backdrop-filter: blur(4px) !important;
 }
 
-/* Chart overrides */
+/* Chart */
 .k-chart {
   font-family: "Inter", system-ui, sans-serif !important;
 }
 
-/* ProgressBar overrides */
+/* ProgressBar */
 .k-progressbar {
   background-color: var(--surface-3) !important;
   border: none !important;
   border-radius: 999px !important;
   overflow: hidden !important;
 }
-
 .k-progressbar .k-selected {
   background: linear-gradient(90deg, var(--brand-violet), var(--brand-cyan)) !important;
   border-radius: 999px !important;
 }
 
-/* AIPrompt overrides */
+/* AIPrompt */
 .k-prompt {
   background-color: var(--surface-1) !important;
   border-color: var(--border-subtle) !important;
@@ -475,9 +356,7 @@ body {
    UTILITY CLASSES
    ======================================================== */
 
-.text-balance {
-  text-wrap: balance;
-}
+.text-balance { text-wrap: balance; }
 
 .glow-violet {
   box-shadow:
@@ -491,10 +370,7 @@ body {
     0 0 60px rgba(6, 182, 212, 0.05);
 }
 
-.hover-glow-violet {
-  transition: box-shadow 0.3s ease;
-}
-
+.hover-glow-violet { transition: box-shadow 0.3s ease; }
 .hover-glow-violet:hover {
   box-shadow:
     0 0 24px rgba(139, 92, 246, 0.2),
@@ -502,9 +378,9 @@ body {
 }
 
 /* ========================================================
-   PAGE TRANSITION WRAPPER
-   Used by app/layout.tsx via the <PageTransition> component
+   PAGE TRANSITION
    ======================================================== */
+
 @keyframes page-in {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -514,15 +390,8 @@ body {
   animation: page-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Smooth transitions for all interactive elements */
-a, button, [role="button"] {
-  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
-  transition-duration: 0.2s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* ========================================================
-   TAG / CHIP — HIGH CONTRAST
+   TAG / CHIP
    ======================================================== */
 
 .tag-chip {
@@ -541,79 +410,11 @@ a, button, [role="button"] {
 }
 
 /* ========================================================
-   LIGHT MODE — KENDO COMPONENT OVERRIDES
+   INTERACTIVE ELEMENT TRANSITIONS
    ======================================================== */
 
-@media (prefers-color-scheme: light) {
-  body {
-    background: var(--background);
-    color: var(--foreground);
-  }
-
-  /* bg-dot-pattern */
-  .bg-dot-pattern {
-    background-image: radial-gradient(
-      rgba(0, 0, 0, 0.06) 1px,
-      transparent 1px
-    );
-  }
-
-  /* Kendo Grid — light */
-  .k-grid {
-    background-color: transparent !important;
-    border-color: var(--border-subtle) !important;
-    color: var(--foreground) !important;
-  }
-  .k-grid .k-table-thead {
-    background-color: rgba(244, 244, 245, 0.9) !important;
-  }
-  .k-grid .k-table-thead .k-table-th {
-    color: #52525b !important;
-    border-color: var(--border-subtle) !important;
-  }
-  .k-grid .k-table-tbody .k-table-row:hover {
-    background-color: rgba(139, 92, 246, 0.04) !important;
-  }
-  .k-grid .k-table-tbody .k-table-td {
-    color: #18181b !important;
-    border-color: rgba(228, 228, 231, 0.6) !important;
-  }
-  .k-grid .k-pager {
-    background-color: rgba(244, 244, 245, 0.8) !important;
-    color: #52525b !important;
-  }
-
-  /* Kendo Scheduler — light */
-  .k-scheduler {
-    background-color: #ffffff !important;
-    border-color: var(--border-subtle) !important;
-  }
-  .k-scheduler .k-scheduler-toolbar {
-    background-color: rgba(244, 244, 245, 0.9) !important;
-  }
-  .k-scheduler .k-scheduler-head {
-    background-color: rgba(244, 244, 245, 0.6) !important;
-  }
-
-  /* Kendo Dialog — light */
-  .k-dialog-wrapper .k-dialog {
-    background-color: #ffffff !important;
-    border: 1px solid var(--border-subtle) !important;
-    box-shadow:
-      0 0 0 1px rgba(0, 0, 0, 0.06),
-      0 24px 80px rgba(0, 0, 0, 0.18) !important;
-  }
-  .k-dialog-wrapper .k-dialog .k-dialog-titlebar {
-    color: #09090b !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-  }
-  .k-dialog-wrapper .k-overlay {
-    background-color: rgba(0, 0, 0, 0.35) !important;
-  }
-
-  /* AIPrompt — light */
-  .k-prompt {
-    background-color: #ffffff !important;
-    border-color: var(--border-subtle) !important;
-  }
+a, button, [role="button"] {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

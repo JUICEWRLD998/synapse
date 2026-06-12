@@ -16,7 +16,7 @@ import {
   Bot,
   User,
   Send,
-  Loader2,
+  Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/Header";

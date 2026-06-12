@@ -1,7 +1,6 @@
 {
   "framework": "nextjs",
-  "installCommand": "npm install --legacy-peer-deps",
-  "buildCommand": "npx kendo-ui-license activate && next build",
+  "buildCommand": "npm install --legacy-peer-deps && npx kendo-ui-license activate && next build",
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 60

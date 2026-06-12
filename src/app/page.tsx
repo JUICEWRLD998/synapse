@@ -267,14 +267,7 @@ export default function Home() {
           animate="visible"
           variants={containerVariants}
         >
-          {/* Badge */}
-          <motion.div
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-violet-500/8 text-violet-300 border border-violet-500/15"
-            variants={itemVariants}
-          >
-            <Zap className="h-3 w-3 text-violet-400" />
-            <span>AI Conference Intelligence Platform</span>
-          </motion.div>
+          {/* Badge removed per user request */}
 
           {/* Headline */}
           <motion.h1
@@ -516,10 +509,6 @@ export default function Home() {
             </div>
             <span className="font-medium text-zinc-400">Synapse</span>
           </div>
-          <p>
-            Built for the GitNation Hackathon 2026. Powered by Neon PostgreSQL &amp;
-            Google Gemini AI.
-          </p>
           <div className="flex items-center gap-4">
             <Link href="/explore" className="hover:text-zinc-300 transition-colors">Explore</Link>
             <Link href="/schedule" className="hover:text-zinc-300 transition-colors">Schedule</Link>

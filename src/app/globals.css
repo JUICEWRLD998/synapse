@@ -21,6 +21,54 @@
   --glass-border: rgba(255, 255, 255, 0.06);
   --glow-violet: rgba(139, 92, 246, 0.15);
   --glow-cyan: rgba(6, 182, 212, 0.12);
+
+  /* Tag / chip colours — clearly visible in dark mode */
+  --tag-bg:     rgba(39, 39, 42, 0.7);
+  --tag-text:   #a1a1aa;
+  --tag-border: rgba(63, 63, 70, 0.5);
+}
+
+/* Light-mode overrides — triggered by data-theme="light" on <html> (manual toggle)
+   OR by OS preference if no manual override has been set */
+[data-theme="light"],
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --background: #f4f4f5;
+    --foreground: #09090b;
+    --surface-0: #f4f4f5;
+    --surface-1: #ffffff;
+    --surface-2: #fafafa;
+    --surface-3: #f0f0f1;
+    --surface-4: #e4e4e7;
+    --border-subtle: rgba(161, 161, 170, 0.35);
+    --border-default: rgba(113, 113, 122, 0.5);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glow-violet: rgba(139, 92, 246, 0.10);
+    --glow-cyan:   rgba(6, 182, 212, 0.08);
+    --tag-bg:     rgba(228, 228, 231, 0.9);
+    --tag-text:   #52525b;
+    --tag-border: rgba(161, 161, 170, 0.4);
+  }
+}
+
+[data-theme="light"] {
+  --background: #f4f4f5;
+  --foreground: #09090b;
+  --surface-0: #f4f4f5;
+  --surface-1: #ffffff;
+  --surface-2: #fafafa;
+  --surface-3: #f0f0f1;
+  --surface-4: #e4e4e7;
+  --border-subtle: rgba(161, 161, 170, 0.35);
+  --border-default: rgba(113, 113, 122, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glow-violet: rgba(139, 92, 246, 0.10);
+  --glow-cyan:   rgba(6, 182, 212, 0.08);
+  --tag-bg:     rgba(228, 228, 231, 0.9);
+  --tag-text:   #52525b;
+  --tag-border: rgba(161, 161, 170, 0.4);
 }
 
 @theme inline {
@@ -38,6 +86,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Bump the base font size slightly so text is easier to read */
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 /* ---- Custom Scrollbar ---- */
@@ -80,6 +131,13 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+@media (prefers-color-scheme: light) {
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(0, 0, 0, 0.09);
+  }
+}
+
 .glass-card {
   background: linear-gradient(
     135deg,
@@ -92,6 +150,26 @@ body {
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.3),
     0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+@media (prefers-color-scheme: light) {
+  .glass-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(248, 248, 249, 0.8) 100%
+    );
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.04),
+      0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+  .glass-card:hover {
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      0 8px 32px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .glass-card:hover {
@@ -441,4 +519,101 @@ a, button, [role="button"] {
   transition-property: color, background-color, border-color, box-shadow, transform, opacity;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================================
+   TAG / CHIP — HIGH CONTRAST
+   ======================================================== */
+
+.tag-chip {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border: 1px solid var(--tag-border);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  line-height: 1.6;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* ========================================================
+   LIGHT MODE — KENDO COMPONENT OVERRIDES
+   ======================================================== */
+
+@media (prefers-color-scheme: light) {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  /* bg-dot-pattern */
+  .bg-dot-pattern {
+    background-image: radial-gradient(
+      rgba(0, 0, 0, 0.06) 1px,
+      transparent 1px
+    );
+  }
+
+  /* Kendo Grid — light */
+  .k-grid {
+    background-color: transparent !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--foreground) !important;
+  }
+  .k-grid .k-table-thead {
+    background-color: rgba(244, 244, 245, 0.9) !important;
+  }
+  .k-grid .k-table-thead .k-table-th {
+    color: #52525b !important;
+    border-color: var(--border-subtle) !important;
+  }
+  .k-grid .k-table-tbody .k-table-row:hover {
+    background-color: rgba(139, 92, 246, 0.04) !important;
+  }
+  .k-grid .k-table-tbody .k-table-td {
+    color: #18181b !important;
+    border-color: rgba(228, 228, 231, 0.6) !important;
+  }
+  .k-grid .k-pager {
+    background-color: rgba(244, 244, 245, 0.8) !important;
+    color: #52525b !important;
+  }
+
+  /* Kendo Scheduler — light */
+  .k-scheduler {
+    background-color: #ffffff !important;
+    border-color: var(--border-subtle) !important;
+  }
+  .k-scheduler .k-scheduler-toolbar {
+    background-color: rgba(244, 244, 245, 0.9) !important;
+  }
+  .k-scheduler .k-scheduler-head {
+    background-color: rgba(244, 244, 245, 0.6) !important;
+  }
+
+  /* Kendo Dialog — light */
+  .k-dialog-wrapper .k-dialog {
+    background-color: #ffffff !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.06),
+      0 24px 80px rgba(0, 0, 0, 0.18) !important;
+  }
+  .k-dialog-wrapper .k-dialog .k-dialog-titlebar {
+    color: #09090b !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+  }
+  .k-dialog-wrapper .k-overlay {
+    background-color: rgba(0, 0, 0, 0.35) !important;
+  }
+
+  /* AIPrompt — light */
+  .k-prompt {
+    background-color: #ffffff !important;
+    border-color: var(--border-subtle) !important;
+  }
 }

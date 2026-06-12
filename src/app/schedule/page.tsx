@@ -97,33 +97,35 @@ function SessionCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.2 }}
-      className={`group relative rounded-xl border p-4 flex flex-col gap-3 transition-all duration-200 ${
+      className={`group relative rounded-xl border flex flex-col transition-all duration-200 overflow-hidden ${
         item.isAttended
-          ? "bg-emerald-500/[0.04] border-emerald-500/20 hover:border-emerald-500/30"
-          : "glass-card hover:border-violet-500/20"
+          ? "bg-emerald-950/20 border-emerald-500/25 hover:border-emerald-500/40"
+          : "bg-zinc-900/40 border-zinc-800/70 hover:border-zinc-700 hover:bg-zinc-900/60"
       }`}
     >
-      {/* Track colour stripe */}
+      {/* Track colour bar — full width top stripe */}
       <div
-        className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full"
+        className="h-[3px] w-full shrink-0"
         style={{ backgroundColor: item.trackColor }}
       />
 
-      <div className="pl-3 flex flex-col gap-1.5">
-        {/* Title + attendance button */}
+      <div className="p-4 flex flex-col gap-3">
+        {/* Title row */}
         <div className="flex items-start justify-between gap-3">
           <button
             onClick={() => onSelect(item.rawTalk)}
-            className="text-left text-sm font-semibold text-zinc-100 hover:text-violet-400 transition-colors leading-snug"
+            className="text-left text-sm font-semibold text-white hover:text-violet-300 transition-colors leading-snug"
           >
             {item.title}
           </button>
+
+          {/* Attend button */}
           <button
             onClick={() => onToggle(item.id, !item.isAttended)}
-            className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
+            className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
               item.isAttended
-                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/20"
-                : "bg-white/[0.03] text-zinc-400 border-zinc-700/50 hover:bg-violet-600 hover:text-white hover:border-violet-500"
+                ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-rose-500/10 hover:text-rose-300 hover:border-rose-500/30"
+                : "bg-zinc-800/80 text-zinc-300 border-zinc-700 hover:bg-violet-600 hover:text-white hover:border-violet-500"
             }`}
           >
             {item.isAttended ? (
@@ -135,38 +137,50 @@ function SessionCard({
         </div>
 
         {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500">
-          <span className="flex items-center gap-1">
-            <User className="h-3 w-3 shrink-0" />
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {/* Speaker */}
+          <span className="flex items-center gap-1.5 text-zinc-300 font-medium">
+            <User className="h-3 w-3 text-zinc-500 shrink-0" />
             {item.speaker}
           </span>
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3 shrink-0" />
+
+          <span className="text-zinc-700">·</span>
+
+          {/* Time */}
+          <span className="flex items-center gap-1.5 text-zinc-400">
+            <Clock className="h-3 w-3 text-zinc-500 shrink-0" />
             {item.time}
           </span>
+
+          <span className="text-zinc-700">·</span>
+
+          {/* Day */}
+          <span className="text-zinc-400">{item.day}</span>
+        </div>
+
+        {/* Track + Tags row */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {/* Track pill — white text on track colour */}
           <span
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium border"
+            className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold"
             style={{
-              backgroundColor: item.trackColor + "18",
-              color: item.trackColor,
-              borderColor: item.trackColor + "35",
+              backgroundColor: item.trackColor + "30",
+              color: "#fff",
+              border: `1px solid ${item.trackColor}50`,
             }}
           >
             {item.track}
           </span>
-          <span className="text-zinc-600">{item.day}</span>
-        </div>
 
-        {/* Tags */}
-        {item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 pt-0.5">
-            {item.tags.slice(0, 4).map((tag: string) => (
-              <span key={tag} className="tag-chip">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+          {item.tags.slice(0, 3).map((tag: string) => (
+            <span
+              key={tag}
+              className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-white/[0.05] text-zinc-300 border border-white/[0.08]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.div>
   );
@@ -361,15 +375,14 @@ export default function SchedulePage() {
                 </div>
               </div>
 
-              <div className="p-4 sm:p-5">
-                <div className="rounded-xl overflow-hidden">
+              <div className="overflow-hidden rounded-b-2xl">
                   <Scheduler
                     data={schedulerData}
                     resources={resources}
                     date={scheduleDay === 1 ? new Date("2026-06-12") : new Date("2026-06-13")}
                     defaultView="day"
                     timezone="Etc/UTC"
-                    style={{ height: 460 }}
+                    style={{ height: 500 }}
                   >
                     <DayView
                       title={`Day ${scheduleDay} · Jun ${scheduleDay === 1 ? "12" : "13"}`}
@@ -379,7 +392,6 @@ export default function SchedulePage() {
                     <TimelineView title="Timeline" slotDuration={60} />
                   </Scheduler>
                 </div>
-              </div>
             </motion.div>
 
             {/* ── Session Directory ────────────────────────────────── */}
@@ -393,9 +405,9 @@ export default function SchedulePage() {
               <div className="px-6 pt-5 pb-4 border-b border-white/[0.05] space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-base font-semibold text-zinc-100">Session Directory</h2>
-                    <p className="text-xs text-zinc-500 mt-0.5">
-                      {filteredItems.length} session{filteredItems.length !== 1 ? "s" : ""} · {attendingCount} selected
+                    <h2 className="text-base font-semibold text-white">Session Directory</h2>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      {filteredItems.length} session{filteredItems.length !== 1 ? "s" : ""} · {attendingCount} attending
                     </p>
                   </div>
 
@@ -407,7 +419,7 @@ export default function SchedulePage() {
                       placeholder="Search sessions, speakers, tags…"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl bg-zinc-900/60 border border-zinc-800 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/20 transition-all"
+                      className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl bg-zinc-900/60 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/20 transition-all"
                     />
                   </div>
                 </div>
@@ -415,15 +427,15 @@ export default function SchedulePage() {
                 {/* Filter row */}
                 <div className="flex flex-wrap gap-2">
                   {/* Day filter */}
-                  <div className="flex items-center rounded-lg overflow-hidden border border-zinc-800 bg-zinc-900/40 text-xs font-medium">
+                  <div className="flex items-center rounded-lg overflow-hidden border border-zinc-700 bg-zinc-900/60 text-xs font-semibold">
                     {([["All Days", 0], ["Day 1", 1], ["Day 2", 2]] as const).map(([label, val]) => (
                       <button
                         key={val}
                         onClick={() => setFilterDay(val as 0 | 1 | 2)}
                         className={`px-3 py-1.5 transition-colors ${
                           filterDay === val
-                            ? "bg-zinc-700 text-white"
-                            : "text-zinc-400 hover:text-zinc-200"
+                            ? "bg-zinc-600 text-white"
+                            : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
                         }`}
                       >
                         {label}
@@ -434,10 +446,10 @@ export default function SchedulePage() {
                   {/* Track filter pills */}
                   <button
                     onClick={() => setFilterTrack("")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
                       filterTrack === ""
                         ? "bg-violet-600 text-white border-violet-500"
-                        : "text-zinc-400 border-zinc-800 hover:text-zinc-200 hover:border-zinc-700"
+                        : "text-zinc-400 border-zinc-700 hover:text-white hover:border-zinc-600"
                     }`}
                   >
                     All Tracks
@@ -446,11 +458,11 @@ export default function SchedulePage() {
                     <button
                       key={tr.id}
                       onClick={() => setFilterTrack(filterTrack === tr.id ? "" : tr.id)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium border transition-all"
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all"
                       style={
                         filterTrack === tr.id
-                          ? { backgroundColor: tr.color + "25", color: tr.color, borderColor: tr.color + "50" }
-                          : { color: "#71717a", borderColor: "#3f3f46", backgroundColor: "transparent" }
+                          ? { backgroundColor: tr.color + "30", color: "#fff", borderColor: tr.color + "60" }
+                          : { color: "#a1a1aa", borderColor: "#52525b", backgroundColor: "transparent" }
                       }
                     >
                       {tr.name}

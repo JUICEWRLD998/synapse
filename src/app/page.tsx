@@ -283,9 +283,9 @@ export default function Home() {
             className="max-w-2xl mx-auto text-sm sm:text-base text-zinc-400 leading-relaxed"
             variants={itemVariants}
           >
-            At multi-track conferences, you attend ~25% of sessions. You miss 75%
-            of the content — and 100% of the connections between them.
-            Synapse stitches the event together with AI.
+            At multi-track conferences, you attend ~25% of sessions and miss 75%
+            of the content — and every connection between talks happening in parallel.
+            Synapse uses AI to stitch the entire event together.
           </motion.p>
 
           {/* CTAs */}
@@ -306,19 +306,6 @@ export default function Home() {
             >
               Personalize Schedule
             </Link>
-          </motion.div>
-
-          {/* Trust bar */}
-          <motion.div
-            className="flex items-center justify-center gap-2 text-[11px] text-zinc-500 pt-2"
-            variants={itemVariants}
-          >
-            <span>Powered by</span>
-            <span className="text-zinc-400 font-medium">Google Gemini</span>
-            <span className="text-zinc-600">·</span>
-            <span className="text-zinc-400 font-medium">Neon PostgreSQL</span>
-            <span className="text-zinc-600">·</span>
-            <span className="text-zinc-400 font-medium">KendoReact</span>
           </motion.div>
         </motion.div>
 

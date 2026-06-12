@@ -4,14 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
-  Activity,
-  LayoutDashboard,
-  Calendar,
-  Sparkles,
-  Network,
   Menu,
   X,
-  Settings,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -33,11 +27,11 @@ export default function Header() {
   };
 
   const navItems = [
-    { name: "Explore",   href: "/explore",   icon: Network         },
-    { name: "Schedule",  href: "/schedule",  icon: Calendar        },
-    { name: "Briefing",  href: "/briefing",  icon: Sparkles        },
-    { name: "Analytics", href: "/analytics", icon: LayoutDashboard },
-    { name: "Admin",     href: "/admin",     icon: Settings        },
+    { name: "Explore",   href: "/explore"   },
+    { name: "Schedule",  href: "/schedule"  },
+    { name: "Briefing",  href: "/briefing"  },
+    { name: "Analytics", href: "/analytics" },
+    { name: "Admin",     href: "/admin"     },
   ];
 
   return (
@@ -47,16 +41,12 @@ export default function Header() {
 
       <div
         className={`glass-strong transition-all duration-300 ${scrolled ? "shadow-lg shadow-black/20" : "shadow-none"}`}
-        style={{ background: scrolled ? "rgba(9,9,11,0.92)" : "rgba(15,15,18,0.8)" }}
+        style={{ background: scrolled ? "rgba(10,10,20,0.95)" : "rgba(14,14,26,0.82)" }}
       >
         <div className="mx-auto flex max-w-7xl h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-900/20 group-hover:shadow-violet-900/40 transition-shadow overflow-hidden">
-              <Activity className="h-4 w-4 relative z-10" />
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
+          <Link href="/" className="flex items-center group">
             <span className="text-base font-bold tracking-tight text-white">SYNAPSE</span>
           </Link>
 
@@ -64,12 +54,11 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
-              const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
+                  className={`relative flex items-center px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                     isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"
                   }`}
                 >
@@ -80,7 +69,6 @@ export default function Header() {
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
-                  <Icon className={`h-3.5 w-3.5 relative z-10 ${isActive ? "text-violet-400" : ""}`} />
                   <span className="relative z-10">{item.name}</span>
                 </Link>
               );
@@ -89,16 +77,9 @@ export default function Header() {
 
           {/* Right section */}
           <div className="flex items-center gap-2.5">
-            <span className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/8 text-emerald-400 border border-emerald-500/15">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              </span>
-              Live
-            </span>
-
             <button
               onClick={handleSignUp}
+              suppressHydrationWarning
               className="hidden sm:inline-flex h-8 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 text-[12px] font-semibold text-white hover:from-violet-500 hover:to-indigo-500 transition-all hover:shadow-lg hover:shadow-violet-900/20 min-w-[90px]"
             >
               {signUpClicked ? "Coming Soon" : "Sign Up"}
@@ -133,7 +114,7 @@ export default function Header() {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed top-[57px] right-0 bottom-0 w-64 z-50 md:hidden p-4"
               style={{
-                background: "rgba(9, 9, 11, 0.97)",
+                background: "rgba(10, 10, 20, 0.97)",
                 backdropFilter: "blur(24px) saturate(1.4)",
                 WebkitBackdropFilter: "blur(24px) saturate(1.4)",
                 borderLeft: "1px solid rgba(255, 255, 255, 0.08)",
@@ -142,25 +123,24 @@ export default function Header() {
               <nav className="flex flex-col gap-1">
                 {navItems.map((item) => {
                   const isActive = pathname === item.href;
-                  const Icon = item.icon;
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                         isActive
                           ? "text-white bg-white/[0.06] border border-white/[0.08]"
                           : "text-zinc-400 hover:text-white hover:bg-white/[0.03]"
                       }`}
                     >
-                      <Icon className={`h-4 w-4 ${isActive ? "text-violet-400" : ""}`} />
                       {item.name}
                     </Link>
                   );
                 })}
                 <div className="border-t border-white/[0.06] mt-3 pt-3">
                   <button
+                    suppressHydrationWarning
                     onClick={() => { setMobileOpen(false); handleSignUp(); }}
                     className="flex w-full items-center justify-center py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-semibold text-white"
                   >

@@ -330,7 +330,7 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.5 }}
         >
           <div className="glass-card rounded-2xl p-1 glow-violet">
-            <div className="rounded-xl overflow-hidden bg-[#09090b] relative">
+            <div className="rounded-xl overflow-hidden bg-[#0a0a14] relative">
               {/* Hero image as background */}
               <div className="absolute inset-0 opacity-40">
                 <Image
@@ -347,7 +347,7 @@ export default function Home() {
                 <MiniGraph />
               </div>
               {/* Gradient overlay at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a0a14] to-transparent z-10" />
             </div>
           </div>
         </motion.div>

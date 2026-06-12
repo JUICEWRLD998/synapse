@@ -51,11 +51,27 @@ const SUGGESTED_PROMPTS = [
   "How do my sessions connect?",
 ];
 
+/* ── Animated typing dots ────────────────────────────────────────── */
+function TypingDots() {
+  return (
+    <span className="flex items-center gap-1 py-0.5" aria-label="Thinking">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="h-1.5 w-1.5 rounded-full bg-zinc-400"
+          animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
+          transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.18, ease: "easeInOut" }}
+        />
+      ))}
+    </span>
+  );
+}
+
 /* ── Chat UI ─────────────────────────────────────────────────────── */
 function ChatPanel() {
-  const [messages,   setMessages]   = useState<ChatMessage[]>([]);
-  const [input,      setInput]      = useState("");
-  const [isLoading,  setIsLoading]  = useState(false);
+  const [messages,  setMessages]  = useState<ChatMessage[]>([]);
+  const [input,     setInput]     = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
   const nextId    = useRef(1);
@@ -68,7 +84,7 @@ function ChatPanel() {
     const prompt = text.trim();
     if (!prompt || isLoading) return;
 
-    const userMsg: ChatMessage = { id: nextId.current++, role: "user", content: prompt };
+    const userMsg: ChatMessage     = { id: nextId.current++, role: "user",      content: prompt };
     const placeholder: ChatMessage = { id: nextId.current++, role: "assistant", content: "", loading: true };
 
     setMessages((prev) => [...prev, userMsg, placeholder]);
@@ -111,6 +127,12 @@ function ChatPanel() {
     }
   };
 
+  const clearChat = () => {
+    setMessages([]);
+    setInput("");
+    inputRef.current?.focus();
+  };
+
   const isEmpty = messages.length === 0;
 
   return (
@@ -130,7 +152,6 @@ function ChatPanel() {
                 Ask anything about your sessions, gaps, or connections
               </p>
             </div>
-            {/* Suggested prompts */}
             <div className="w-full space-y-2 mt-2">
               {SUGGESTED_PROMPTS.map((p) => (
                 <button
@@ -144,7 +165,6 @@ function ChatPanel() {
             </div>
           </div>
         ) : (
-          /* Message bubbles */
           <>
             {messages.map((msg) => (
               <motion.div
@@ -155,32 +175,21 @@ function ChatPanel() {
                 className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
               >
                 {/* Avatar */}
-                <div
-                  className={`shrink-0 flex h-7 w-7 items-center justify-center rounded-full border text-xs ${
-                    msg.role === "user"
-                      ? "bg-violet-600/20 border-violet-500/30 text-violet-300"
-                      : "bg-zinc-800/60 border-zinc-700/50 text-zinc-400"
-                  }`}
-                >
+                <div className={`shrink-0 flex h-7 w-7 items-center justify-center rounded-full border ${
+                  msg.role === "user"
+                    ? "bg-violet-600/20 border-violet-500/30 text-violet-300"
+                    : "bg-zinc-800/60 border-zinc-700/50 text-zinc-400"
+                }`}>
                   {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
                 </div>
 
                 {/* Bubble */}
-                <div
-                  className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
-                    msg.role === "user"
-                      ? "bg-violet-600 text-white rounded-tr-sm"
-                      : "bg-zinc-800/60 border border-zinc-700/40 text-zinc-200 rounded-tl-sm"
-                  }`}
-                >
-                  {msg.loading ? (
-                    <span className="flex items-center gap-2 text-zinc-400">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      <span className="text-xs">Thinking…</span>
-                    </span>
-                  ) : (
-                    msg.content
-                  )}
+                <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                  msg.role === "user"
+                    ? "bg-violet-600 text-white rounded-tr-sm"
+                    : "bg-zinc-800/60 border border-zinc-700/40 text-zinc-200 rounded-tl-sm"
+                }`}>
+                  {msg.loading ? <TypingDots /> : msg.content}
                 </div>
               </motion.div>
             ))}
@@ -190,7 +199,7 @@ function ChatPanel() {
       </div>
 
       {/* ── Input bar ────────────────────────────────────────────── */}
-      <div className="px-4 pb-4 pt-3 border-t border-white/[0.05]">
+      <div className="px-4 pb-4 pt-3 border-t border-white/[0.05] space-y-2">
         <div className="flex items-center gap-2 rounded-xl bg-zinc-900/60 border border-zinc-800 focus-within:border-violet-500/50 focus-within:ring-1 focus-within:ring-violet-500/20 transition-all px-3 py-2">
           <input
             ref={inputRef}
@@ -208,14 +217,22 @@ function ChatPanel() {
             className="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg bg-violet-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-violet-500 transition-colors"
             aria-label="Send message"
           >
-            {isLoading ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Send className="h-3.5 w-3.5" />
-            )}
+            <Send className="h-3.5 w-3.5" />
           </button>
         </div>
-        <p className="text-[10px] text-zinc-600 mt-1.5 text-center">Powered by Gemini AI</p>
+
+        {/* Clear chat — only visible when there are messages */}
+        {!isEmpty && (
+          <button
+            onClick={clearChat}
+            className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium text-zinc-500 hover:text-rose-400 hover:bg-rose-500/5 border border-transparent hover:border-rose-500/15 transition-all"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Clear conversation
+          </button>
+        )}
+
+        <p className="text-[10px] text-zinc-600 text-center">Powered by Gemini AI</p>
       </div>
     </div>
   );

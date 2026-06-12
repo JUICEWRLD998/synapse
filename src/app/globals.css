@@ -42,7 +42,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   /* Slightly larger base so all relative sizes read better */
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.65;
 }
 
@@ -53,15 +53,15 @@ body {
    ────────────────────────────────────────────────────────────────── */
 
 /* zinc-500 → lifted to a readable mid-grey */
-.text-zinc-500 { color: #a1a1aa !important; }
+.text-zinc-500 { color: #b0b0b8 !important; }
 
 /* zinc-400 → pushed to near-white for body copy */
-.text-zinc-400 { color: #c4c4cc !important; }
+.text-zinc-400 { color: #d1d1d8 !important; }
 
 /* zinc-300 stays as-is — already bright enough */
 
 /* zinc-600 only used for truly secondary meta — lift it slightly */
-.text-zinc-600 { color: #8e8e96 !important; }
+.text-zinc-600 { color: #9e9ea6 !important; }
 
 /* ---- Custom Scrollbar ---- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -289,7 +289,7 @@ body {
 .k-grid .k-table-tbody .k-table-td {
   color: #e4e4e8 !important;
   border-color: rgba(39, 39, 42, 0.3) !important;
-  font-size: 13.5px !important;
+  font-size: 13px !important;
 }
 .k-grid .k-pager {
   background-color: rgba(15, 15, 18, 0.6) !important;

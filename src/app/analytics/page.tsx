@@ -144,7 +144,7 @@ export default function AnalyticsPage() {
                   >
                     <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${c.gradient}`} />
                     <div className="space-y-1">
-                      <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+                      <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                         {kpi.label}
                       </div>
                       <div className="text-2xl font-bold text-white">
@@ -187,20 +187,20 @@ export default function AnalyticsPage() {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Trophy className="h-4 w-4 text-amber-400" />
-                  <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                  <h4 className="text-sm font-semibold text-zinc-200 uppercase tracking-wider">
                     Synapse Leaderboard
                   </h4>
-                  <span className="text-[10px] text-zinc-600 ml-auto">Most-connected sessions</span>
+                  <span className="text-xs text-zinc-500 ml-auto">Most-connected sessions</span>
                 </div>
 
-                <ol className="space-y-2">
+                <ol className="space-y-1">
                   {leaderboard.slice(0, 8).map((entry, idx) => (
                     <li
                       key={entry.id}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.02] transition-colors group"
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group"
                     >
                       <span className={`text-sm font-bold tabular-nums w-6 text-center shrink-0 ${
-                        idx === 0 ? "text-amber-400" : idx === 1 ? "text-zinc-300" : idx === 2 ? "text-amber-600" : "text-zinc-600"
+                        idx === 0 ? "text-amber-400" : idx === 1 ? "text-zinc-200" : idx === 2 ? "text-amber-600" : "text-zinc-500"
                       }`}>
                         {idx + 1}
                       </span>
@@ -208,18 +208,18 @@ export default function AnalyticsPage() {
                       <div className="flex-1 min-w-0">
                         <Link
                           href={`/talks/${entry.id}`}
-                          className="text-xs font-medium text-zinc-200 group-hover:text-violet-300 transition-colors truncate block"
+                          className="text-sm font-semibold text-zinc-100 group-hover:text-violet-300 transition-colors truncate block"
                         >
                           {entry.title}
                         </Link>
-                        <div className="text-[10px] text-zinc-500 mt-0.5 truncate">
+                        <div className="text-xs text-zinc-400 mt-0.5 truncate">
                           {entry.speaker}{entry.company ? ` · ${entry.company}` : ""}
                         </div>
                       </div>
 
                       <div className="shrink-0 text-right">
-                        <div className="text-sm font-bold text-white tabular-nums">{entry.connections}</div>
-                        <div className="text-[9px] text-zinc-600 uppercase tracking-wider">synapses</div>
+                        <div className="text-base font-bold text-white tabular-nums">{entry.connections}</div>
+                        <div className="text-[10px] text-zinc-500 uppercase tracking-wider">synapses</div>
                       </div>
 
                       <div className="shrink-0 w-16 hidden sm:block">
@@ -229,7 +229,7 @@ export default function AnalyticsPage() {
                             style={{ width: `${Math.round(entry.avgStrength * 100)}%` }}
                           />
                         </div>
-                        <div className="text-[9px] text-zinc-600 mt-0.5 text-right tabular-nums">
+                        <div className="text-[10px] text-zinc-500 mt-0.5 text-right tabular-nums">
                           {Math.round(entry.avgStrength * 100)}% avg
                         </div>
                       </div>

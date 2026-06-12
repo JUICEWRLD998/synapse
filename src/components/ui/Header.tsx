@@ -19,12 +19,18 @@ export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled,   setScrolled]   = useState(false);
+  const [signUpClicked, setSignUpClicked] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleSignUp = () => {
+    setSignUpClicked(true);
+    setTimeout(() => setSignUpClicked(false), 2500);
+  };
 
   const navItems = [
     { name: "Explore",   href: "/explore",   icon: Network         },
@@ -91,12 +97,12 @@ export default function Header() {
               Live
             </span>
 
-            <Link
-              href="/schedule"
-              className="hidden sm:inline-flex h-8 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 text-[12px] font-semibold text-white hover:from-violet-500 hover:to-indigo-500 transition-all hover:shadow-lg hover:shadow-violet-900/20"
+            <button
+              onClick={handleSignUp}
+              className="hidden sm:inline-flex h-8 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 text-[12px] font-semibold text-white hover:from-violet-500 hover:to-indigo-500 transition-all hover:shadow-lg hover:shadow-violet-900/20 min-w-[90px]"
             >
-              Get Started
-            </Link>
+              {signUpClicked ? "Coming Soon" : "Sign Up"}
+            </button>
 
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -154,13 +160,12 @@ export default function Header() {
                   );
                 })}
                 <div className="border-t border-white/[0.06] mt-3 pt-3">
-                  <Link
-                    href="/schedule"
-                    onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-semibold text-white"
+                  <button
+                    onClick={() => { setMobileOpen(false); handleSignUp(); }}
+                    className="flex w-full items-center justify-center py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-semibold text-white"
                   >
-                    Get Started
-                  </Link>
+                    {signUpClicked ? "Coming Soon" : "Sign Up"}
+                  </button>
                 </div>
               </nav>
             </motion.div>

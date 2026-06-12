@@ -2,17 +2,41 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
+// Model cascade: lite first (lower demand / faster), full flash as fallback
+const MODEL_CASCADE = ["gemini-2.5-flash-lite", "gemini-2.5-flash"];
+
 /**
- * Call Gemini 2.5 Flash and return the text response.
+ * Call Gemini and return the text response.
+ * Tries gemini-2.5-flash-lite first; if that 503s, falls back to gemini-2.5-flash.
  * Used server-side only (API routes).
  */
 export async function callGemini(prompt: string): Promise<string> {
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-  });
+  let lastError: unknown;
 
-  return response.text ?? "";
+  for (const model of MODEL_CASCADE) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+      });
+      return response.text ?? "";
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      // Only cascade to next model on 503/overload — hard errors (auth, quota) throw immediately
+      const isOverload =
+        msg.includes("503") ||
+        msg.includes("UNAVAILABLE") ||
+        msg.includes("high demand") ||
+        msg.includes("overloaded");
+
+      if (!isOverload) throw err;
+
+      console.warn(`Model ${model} returned 503, trying next model…`);
+      lastError = err;
+    }
+  }
+
+  throw lastError;
 }
 
 /**
@@ -24,7 +48,7 @@ export async function callGeminiWithRetry(
   prompt: string,
   {
     maxAttempts = 4,
-    baseDelayMs = 3000,
+    baseDelayMs = 2000,
     perAttemptTimeoutMs = 30_000,
   }: {
     maxAttempts?: number;
@@ -63,7 +87,7 @@ export async function callGeminiWithRetry(
         throw err;
       }
 
-      // Exponential back-off: 3 s, 6 s, 12 s  +  0–1 s jitter
+      // Exponential back-off: 2 s, 4 s, 8 s  +  0–1 s jitter
       const delay = baseDelayMs * 2 ** (attempt - 1) + Math.random() * 1000;
       console.warn(
         `Gemini 503 on attempt ${attempt}/${maxAttempts}. Retrying in ${Math.round(delay)}ms…`

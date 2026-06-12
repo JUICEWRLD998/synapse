@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm install --legacy-peer-deps && npx kendo-ui-license activate && next build",
+  "buildCommand": "TELERIK_LICENSE_SKIP=true npm install --legacy-peer-deps && npx kendo-ui-license activate && next build",
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 60

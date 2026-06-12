@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm install --legacy-peer-deps && next build",
+  "installCommand": "npm install --legacy-peer-deps",
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 60
